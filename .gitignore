@@ -1,0 +1,98 @@
+# ----------------------------------------
+# 🌐 Front-end (React / Next.js / Vite)
+# ----------------------------------------
+node_modules/
+dist/
+.build/
+.next/
+out/
+.cache/
+.vite/
+
+# Logs e relatórios
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Arquivos de build temporários
+*.tsbuildinfo
+*.svelte-kit
+
+# Ambientes locais e secrets
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs / Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------
+# ⚙️ Back-end (Node.js / Spring Boot / Java)
+# ----------------------------------------
+# Node.js
+backend/node_modules/
+backend/dist/
+backend/.env
+
+# Java / Spring Boot
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+out/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+
+# Maven
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# Logs
+logs/
+*.log
+
+# ----------------------------------------
+# 🧪 Test Coverage / Output
+# ----------------------------------------
+coverage/
+.nyc_output/
+jest-coverage/
+test-results/
+test-report/
+
+# ----------------------------------------
+# 🧰 Misc
+# ----------------------------------------
+*.tgz
+*.log
+*.bak
+*.tmp
+*.pid
+*.seed
+*.pid.lock
+yarn.lock.backup
+
+# Optional: Ignore global lockfiles if you're not using them
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
