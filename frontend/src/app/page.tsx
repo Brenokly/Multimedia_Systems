@@ -1,6 +1,6 @@
-// src/app/page.tsx
+"use client";
 
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 import VideoPlayer from "@/components/ui/VideoPlayer";
 import Image from "next/image";
 
@@ -22,18 +22,15 @@ export default function LandingPage() {
           uma quest, e cada resposta correta, uma vitória.
         </p>
         <div className="mt-8">
-          <Button href="/signup" variant="primary" className="text-lg">
+          <ButtonLink href="/signup" variant="primary" className="text-lg">
             Comece sua Aventura
-          </Button>
+          </ButtonLink>
         </div>
       </section>
 
       {/* SEÇÃO SOBRE */}
-      <section
-        id="sobre"
-        className="w-full py-20 px-4 bg-[var(--color-brand-section-1)]"
-      >
-        <div className="container mx-auto grid md:grid-cols-2 gap-30 items-center">
+      <section id="sobre" className="w-full py-20 px-4 bg-pixelSection1">
+        <div className="container mx-auto grid md:grid-cols-2 gap-24 items-center">
           <div className="text-center md:text-left">
             <h2 className="text-3xl text-yellow-300 mb-6 [text-shadow:2px_2px_0_#000]">
               O que é a Noesis?
@@ -45,14 +42,13 @@ export default function LandingPage() {
               e aprende na prática, de forma divertida e gamificada.
             </p>
           </div>
-
-          <div className="h-[600px] w-[600px] pixel-border p-0">
+          <div className="h-[400px] pixel-border p-0">
             <Image
               src="/MundoNoesis.png"
               width={600}
               height={400}
               alt="Mundo de Noesis"
-              className="w-full h-full object-fill"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -61,11 +57,11 @@ export default function LandingPage() {
       {/* SEÇÃO COMO FUNCIONA */}
       <section
         id="como-funciona"
-        className="w-full py-20 px-4 bg-[var(--color-brand-section-2)]"
+        className="w-full py-20 px-4 bg-pixelSection2"
       >
-        <div className="container mx-auto grid md:grid-cols-2 gap-30 items-center">
-          <div className="order-2 md:order-1 h-[600px]">
-            <VideoPlayer videoId="JSfuFlhsxZY" />{" "}
+        <div className="container mx-auto grid md:grid-cols-2 gap-24 items-center">
+          <div className="order-2 md:order-1 h-[400px]">
+            <VideoPlayer videoId="JSfuFlhsxZY" />
           </div>
           <div className="text-center md:text-left order-1 md:order-2">
             <h2 className="text-3xl text-yellow-300 mb-6 [text-shadow:2px_2px_0_#000]">
@@ -92,7 +88,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer
         id="contato"
-        className="w-full py-12 px-4 text-center bg-[var(--color-footer-bg)]"
+        className="w-full py-12 px-4 text-center bg-pixelFooter"
       >
         <p>NOESIS (c) 2025 - Forjado com Código e Magia</p>
         <p className="text-xs mt-4">Entre em contato: contato@noesis.com</p>

@@ -1,20 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
 
-// A tipagem agora é simples e herda diretamente os atributos de um botão HTML.
-type ButtonProps = {
+// A tipagem herda os atributos de um link (<a>) e exige 'href'.
+type ButtonLinkProps = {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   className?: string;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+    href: string;
+  };
 
-const Button = ({
+const ButtonLink = ({
   children,
   variant = "primary",
   className = "",
+  href,
   ...props
-}: ButtonProps) => {
+}: ButtonLinkProps) => {
   const baseClasses =
     "py-3 px-6 uppercase cursor-pointer text-white border-4 border-[var(--color-brand-border-dark)] transition-all duration-100 ease-in-out text-center";
 
@@ -36,12 +40,12 @@ const Button = ({
 
   const finalClasses = `${baseClasses} ${shadowClasses} ${variantStyles[variant]} ${className}`;
 
-  // O componente agora renderiza apenas um botão, sem lógica de link.
+  // O componente renderiza apenas um Link, sem lógica de botão.
   return (
-    <button className={finalClasses} {...props}>
+    <Link href={href} className={finalClasses} {...props}>
       {children}
-    </button>
+    </Link>
   );
 };
 
-export default Button;
+export default ButtonLink;

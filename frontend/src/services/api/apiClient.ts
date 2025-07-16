@@ -20,7 +20,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor de Resposta: Trata erros de autenticação
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {

@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import ButtonLink from "@/components/ui/ButtonLink";
 import Link from "next/link";
 
 const Header = () => {
@@ -17,12 +17,12 @@ const Header = () => {
             Contato
           </Link>
 
-          <Button href="/login" variant="primary" className="!text-xs !p-2">
+          <ButtonLink href="/login" variant="primary" className="!text-xs !p-2">
             Login
-          </Button>
-          <Button href="/signup" variant="secondary" className="!text-xs !p-2">
+          </ButtonLink>
+          <ButtonLink href="/signup" variant="secondary" className="!text-xs !p-2">
             Sign up
-          </Button>
+          </ButtonLink>
         </nav>
       </div>
     </header>
