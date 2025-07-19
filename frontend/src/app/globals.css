@@ -2,20 +2,25 @@
 
 :root {
   --font-pixel: "Press Start 2P", cursive;
-  --color-brand-bg: #f5f5dc;
-  --color-brand-text: #5d4037;
-  --color-brand-border-light: #efebe9;
-  --color-brand-border-dark: #5d4037;
-  --color-brand-btn: #4caf50;
-  --color-brand-btn-shadow: #388e3c;
-  --color-brand-section-1: #3a5a40;
-  --color-brand-section-2: #588157;
+  --bg-color: #f5f5dc;
+  --text-color: #5d4037;
+  --border-highlight: #efebe9;
+  --border-shadow: #5d4037;
+  --btn-bg: #4caf50;
+  --btn-text: #ffffff;
+  --btn-shadow: #388e3c;
+  --section-bg-1: #3a5a40;
+  --section-bg-2: #588157;
   --color-btn-blue: #0288d1;
-  --color-btn-blue-shadow: #0277bd;
+  --btn-bs: #0277bd;
   --color-footer-bg: #1e293b;
   --color-header-bg: rgba(0, 0, 0, 0.5);
   --color-yellow-primary: #fdd835;
   --color-yellow-shadow: #fbc02d;
+  --color-brand-red: #d32f2f;
+  --color-brand-red-shadow: #c62828;
+  --color-fundo: #252637;
+  --color-fundo-shadow: #1C1C29;
 }
 
 body {
@@ -26,12 +31,47 @@ body {
 }
 
 .pixel-border {
-  border-width: 4px;
-  border-color: var(--color-brand-border-dark);
+  border: 4px solid var(--border-shadow);
   box-shadow:
-    inset -4px -4px 0 0 var(--color-brand-border-dark),
-    inset 4px 4px 0 0 var(--color-brand-border-light);
-  background-color: var(--color-brand-bg);
-  color: var(--color-brand-text);
+    inset -4px -4px 0px 0px var(--border-shadow),
+    inset 4px 4px 0px 0px var(--border-highlight);
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 1rem;
+}
+
+.text-shadow-custom {
+  text-shadow: 2px 2px 0px #00000050;
+}
+
+.btn-pixel {
+  padding: 12px 24px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--btn-text);
+  background-color: var(--btn-bg);
+  border: 4px solid var(--border-shadow);
+  box-shadow: inset -4px -4px 0px 0px var(--btn-shadow);
+  text-shadow: 2px 2px 0px #00000050;
+  transition: all 0.1s ease;
+  text-align: center;
+}
+.btn-pixel:hover {
+  background-color: #66bb6a;
+}
+.btn-pixel:active {
+  box-shadow: inset 4px 4px 0px 0px var(--btn-shadow);
+  transform: translateY(2px);
+}
+
+.select-pixel {
+  border: 4px solid var(--border-shadow);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 10px;
+  box-shadow:
+    inset -4px -4px 0 0 var(--border-shadow),
+    inset 4px 4px 0 0 var(--border-highlight);
+  text-transform: uppercase;
+  font-size: 0.875rem;
 }

@@ -10,21 +10,23 @@ module.exports = {
       fontFamily: {
         pixel: ["var(--font-pixel)"],
       },
+      boxShadow: {
+        "inset-btn": "inset -4px -4px 0 0 var(--btn-shadow)",
+      },
       colors: {
-        // Acesso direto a variáveis CSS com nomes simples
-        pixelBorder: "var(--color-brand-border-dark)",
-        pixelBorderLight: "var(--color-brand-border-light)",
+        pixelBorder: "var(--border-shadow)",
+        pixelBorderLight: "var(--border-highlight)",
         pixelText: "var(--color-brand-text)",
-        pixelBg: "var(--color-brand-bg)",
+        pixelBg: "var(--bg-color)",
 
         pixelBtn: "var(--color-brand-btn)",
-        pixelBtnShadow: "var(--color-brand-btn-shadow)",
+        pixelBtnShadow: "var(--btn-shadow)",
 
         pixelBlueBtn: "var(--color-btn-blue)",
-        pixelBlueBtnShadow: "var(--color-btn-blue-shadow)",
+        pixelBlueBtnShadow: "var(--btn-bs)",
 
-        pixelSection1: "var(--color-brand-section-1)",
-        pixelSection2: "var(--color-brand-section-2)",
+        pixelSection1: "var(--section-bg-1)",
+        pixelSection2: "var(--section-bg-2)",
 
         pixelFooter: "var(--color-footer-bg)",
         pixelHeader: "var(--color-header-bg)",
