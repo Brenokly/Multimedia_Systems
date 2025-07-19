@@ -4,7 +4,10 @@ export function UserHeader() {
 
   return (
     <header className="flex justify-end items-center">
-      <div className="flex items-center space-x-4 p-4 pixel-border bg-black bg-opacity-25">
+      <div
+        className="flex items-center space-x-4 p-4 pixel-border bg-opacity-25"
+        style={{ backgroundColor: "#252637" }}
+      >
         <div className="text-right">
           <span className="font-semibold text-white">{userName}</span>
           <p className="text-sm text-yellow-300">{userClass}</p>
