@@ -1,8 +1,9 @@
 import apiClient from '@/services/api/apiClient';
 import { AuthRequest, LoginResponse, UserData } from '../types/authTypes';
+import { SignupFormInputs } from '@/validators/authValidators';
 
-export const registerUserService = async (data: AuthRequest): Promise<UserData> => {
-  const response = await apiClient.post<UserData>('/users/register', data);
+export const signupUserService = async (data: SignupFormInputs): Promise<UserData> => {
+  const response = await apiClient.post<UserData>('/users/signup', data);
   return response.data;
 };
 
