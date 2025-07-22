@@ -23,7 +23,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const baseClasses =
-    "uppercase cursor-pointer text-[var(--btn-text)] border-4 border-[var(--border-shadow)] text-center transition-all duration-100 ease-in-out text-shadow-custom";
+    "uppercase cursor-pointer hover:brightness-110 text-[var(--btn-text)] border-4 border-[var(--border-shadow)] text-center transition-all duration-100 ease-in-out text-shadow-custom";
 
   const shadowClasses =
     "shadow-[inset_-4px_-4px_0_0_var(--tw-shadow-color)] active:shadow-[inset_4px_4px_0_0_var(--tw-shadow-color)] active:translate-y-[2px]";

@@ -2,6 +2,7 @@
 
 import ButtonLink from "@/components/ui/ButtonLink";
 import { PixelCombobox } from "@/components/ui/PixelCombobox";
+import QuestItem from "@/components/ui/QuestItem";
 import { getGlobalQuests } from "@/services/quests.service";
 import { Quest } from "@/types/quest.types";
 import { useEffect, useState } from "react";
@@ -21,22 +22,6 @@ const subjects = [
   { id: "Redes", label: "Redes" },
   { id: "Arquitetura", label: "Arquitetura" },
 ];
-
-const QuestItem = ({ quest }: { quest: Quest }) => (
-  <div
-    className="p-2 flex justify-between items-center rounded"
-    style={{ backgroundColor: "#1C1C29" }}
-  >
-    <p className="text-white">{quest.title}</p>
-    <ButtonLink
-      href={`/quests/${quest.id}`}
-      variant="primary"
-      className="!text-xs !py-2 !px-4"
-    >
-      Aceitar
-    </ButtonLink>
-  </div>
-);
 
 export default function GlobalQuestsPage() {
   const [allFilteredQuests, setAllFilteredQuests] = useState<Quest[]>([]);
@@ -126,7 +111,19 @@ export default function GlobalQuestsPage() {
           <p className="text-center text-white">Carregando quests...</p>
         ) : currentQuests.length > 0 ? (
           currentQuests.map((quest) => (
-            <QuestItem key={quest.id} quest={quest} />
+            <QuestItem
+              key={quest.id}
+              quest={quest}
+              action={
+                <ButtonLink
+                  href={`/quests/${quest.id}`}
+                  variant="primary"
+                  className="!text-xs !py-2 !px-4"
+                >
+                  Aceitar
+                </ButtonLink>
+              }
+            />
           ))
         ) : (
           <p className="text-center text-white">
