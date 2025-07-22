@@ -1,12 +1,10 @@
-import Header from "@/components/layout/Header";
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
-const pressStart2P = Press_Start_2P({
+const pressStart = Press_Start_2P({
   subsets: ["latin"],
   weight: "400",
-  display: "swap",
   variable: "--font-pixel",
 });
 
@@ -21,11 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={pressStart2P.variable}>
-      <body>
-        <Header />
-        {children}
-      </body>
+    <html lang="pt-BR" className={pressStart.variable}>
+      <body>{children}</body>
     </html>
   );
 }

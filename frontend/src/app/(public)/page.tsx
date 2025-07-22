@@ -22,7 +22,7 @@ export default function LandingPage() {
           uma quest, e cada resposta correta, uma vitória.
         </p>
         <div className="mt-8">
-          <ButtonLink href="/signup" variant="primary" className="text-lg">
+          <ButtonLink href="/signup" variant="primary" size="lg">
             Comece sua Aventura
           </ButtonLink>
         </div>
