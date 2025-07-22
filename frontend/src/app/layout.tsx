@@ -1,4 +1,3 @@
-import Header from "@/components/layout/Header";
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
@@ -22,10 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={pressStart2P.variable}>
-      <body>
-        <Header />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

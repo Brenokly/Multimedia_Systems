@@ -5,32 +5,42 @@ import React from "react";
 // A tipagem agora é simples e herda diretamente os atributos de um botão HTML.
 type ButtonProps = {
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: "green" | "blue" | "yellow" | "red";
   className?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button = ({
   children,
-  variant = "primary",
+  variant = "green",
   className = "",
   ...props
 }: ButtonProps) => {
   const baseClasses =
-    "py-3 px-6 uppercase cursor-pointer text-white border-4 border-[var(--color-brand-border-dark)] transition-all duration-100 ease-in-out text-center";
+    "py-3 px-6 uppercase cursor-pointer hover:brightness-110 border-4 border-[var(--color-brand-border-dark)] transition-all duration-100 ease-in-out text-center";
 
   const shadowClasses =
     "shadow-[inset_-4px_-4px_0_0_var(--tw-shadow-color)] active:shadow-[inset_4px_4px_0_0_var(--tw-shadow-color)] active:translate-y-0.5";
 
   const variantStyles = {
-    primary: [
+    green: [
       "bg-[var(--color-brand-btn)]",
       "[--tw-shadow-color:var(--color-brand-btn-shadow)]",
-      "hover:brightness-110",
+      "text-white",
     ].join(" "),
-    secondary: [
+    blue: [
       "bg-[var(--color-btn-blue)]",
       "[--tw-shadow-color:var(--color-btn-blue-shadow)]",
-      "hover:brightness-110",
+      "text-white",
+    ].join(" "),
+    yellow: [
+      "bg-[var(--color-yellow-primary)]",
+      "[--tw-shadow-color:var(--color-yellow-shadow)]",
+      "text-[var(--color-brand-border-dark)]",
+    ].join(" "),
+    red: [
+      "bg-red-500",
+      "[--tw-shadow-color:theme(colors.red.700)]",
+      "text-white",
     ].join(" "),
   };
 

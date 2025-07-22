@@ -17,10 +17,10 @@ const Header = () => {
             Contato
           </Link>
 
-          <ButtonLink href="/login" variant="primary" className="!text-xs !p-2">
+          <ButtonLink href="/login" variant="green" className="!text-xs !p-2">
             Login
           </ButtonLink>
-          <ButtonLink href="/signup" variant="secondary" className="!text-xs !p-2">
+          <ButtonLink href="/signup" variant="blue" className="!text-xs !p-2">
             Sign up
           </ButtonLink>
         </nav>

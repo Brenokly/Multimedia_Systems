@@ -6,7 +6,7 @@ import React from "react";
 // A tipagem herda os atributos de um link (<a>) e exige 'href'.
 type ButtonLinkProps = {
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: "green" | "blue";
   className?: string;
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     href: string;
@@ -14,7 +14,7 @@ type ButtonLinkProps = {
 
 const ButtonLink = ({
   children,
-  variant = "primary",
+  variant = "green",
   className = "",
   href,
   ...props
@@ -26,12 +26,12 @@ const ButtonLink = ({
     "shadow-[inset_-4px_-4px_0_0_var(--tw-shadow-color)] active:shadow-[inset_4px_4px_0_0_var(--tw-shadow-color)] active:translate-y-0.5";
 
   const variantStyles = {
-    primary: [
+    green: [
       "bg-[var(--color-brand-btn)]",
       "[--tw-shadow-color:var(--color-brand-btn-shadow)]",
       "hover:brightness-110",
     ].join(" "),
-    secondary: [
+    blue: [
       "bg-[var(--color-btn-blue)]",
       "[--tw-shadow-color:var(--color-btn-blue-shadow)]",
       "hover:brightness-110",

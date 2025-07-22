@@ -91,7 +91,7 @@ export default function LoginPage() {
             </div>
             <Button
               type="submit"
-              variant="primary"
+              variant="green"
               className="w-full"
               disabled={isLoading}
             >

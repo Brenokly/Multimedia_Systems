@@ -35,3 +35,12 @@ body {
   color: var(--color-brand-text);
   padding: 1rem;
 }
+
+.pixel-border-dark {
+  background-color: #2E3044;
+  border-width: 4px;
+  border-color: var(--color-brand-border-dark);
+  box-shadow:
+    inset -4px -4px 0 0 var(--color-brand-border-dark),
+    inset 4px 4px 0 0 var(--color-brand-border-light);
+}

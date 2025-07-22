@@ -14,4 +14,6 @@ export interface LoginResponse {
 export interface UserData {
   id: number;
   login: string;
+  role: "teacher" | "student";
+  avatar?: string;
 }
