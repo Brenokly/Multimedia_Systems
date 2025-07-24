@@ -27,10 +27,13 @@ public class User {
     @Column
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
