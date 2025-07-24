@@ -22,7 +22,7 @@ public interface UserRequest {
         @NotBlank
         private String password;
 
-        @NotBlank
+        @NotNull
         private Role role;
     }
 

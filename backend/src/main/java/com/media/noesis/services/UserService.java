@@ -19,7 +19,7 @@ public class UserService {
     private UserRepository repository;
     private UserConverter converter;
 
-    public List<UserDto> listAll() {
+    public List<UserDto> findAll() {
         return repository.findAll().stream()
                 .map(converter::toDto)
                 .toList();
