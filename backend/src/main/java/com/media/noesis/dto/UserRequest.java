@@ -2,9 +2,9 @@ package com.media.noesis.dto;
 
 import com.media.noesis.enums.Role;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,6 @@ public interface UserRequest {
 
     @Data
     @NoArgsConstructor
-    @AllArgsConstructor
     public class Create {
 
         private String name;
@@ -24,6 +23,10 @@ public interface UserRequest {
 
         @NotBlank
         private String password;
+
+        @NotNull(message = "A escolha de um avatar é obrigatória.")
+        @Min(value = 1, message = "ID do avatar inválido.")
+        private int avatarId;
 
         @NotNull
         private Role role;
@@ -36,5 +39,4 @@ public interface UserRequest {
         @NotNull
         private long id;
     }
-
 }

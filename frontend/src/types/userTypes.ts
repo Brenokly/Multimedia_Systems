@@ -12,6 +12,7 @@ export interface UserDto {
   id: number;
   name: string;
   username: string;
+  avatarId: number;
   role: Role;
 }
 
@@ -23,6 +24,7 @@ export interface UserCreateRequest {
   name: string;
   username: string;
   password: string;
+  avatarId: number;
   role: Role;
 }
 
@@ -35,5 +37,6 @@ export interface UserUpdateRequest {
   name: string;
   username: string;
   password?: string;
+  avatarId: number;
   role: Role;
 }

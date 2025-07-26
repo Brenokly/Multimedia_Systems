@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.media.noesis.converters.UserConverter;
 import com.media.noesis.dto.UserDto;
@@ -28,11 +29,14 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public void create(final UserRequest.Create request) {
-        // Converte o DTO para a entidade
-        final User entity = converter.toEntity(request);
+        final User entity = new User();
+        entity.setName(request.getName());
+        entity.setUsername(request.getUsername());
+        entity.setAvatarId(request.getAvatarId());
+        entity.setRole(request.getRole());
 
-        // ** CRIPTOGRAFA A SENHA ANTES DE SALVAR **
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         entity.setPassword(hashedPassword);
 
@@ -41,15 +45,28 @@ public class UserService {
 
     public UserDto findById(final long id) {
         final var entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
         return converter.toDto(entity);
     }
 
+    @Transactional
     public void update(final UserRequest.Update request) {
-        final var entity = converter.toEntity(request);
+        final User entity = repository.findById(request.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + request.getId() + " não encontrado para atualização."));
+
+        entity.setName(request.getName());
+        entity.setUsername(request.getUsername());
+        entity.setAvatarId(request.getAvatarId());
+        entity.setRole(request.getRole());
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            entity.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         repository.save(entity);
     }
 
+    @Transactional
     public void delete(final long id) {
         repository.deleteById(id);
     }

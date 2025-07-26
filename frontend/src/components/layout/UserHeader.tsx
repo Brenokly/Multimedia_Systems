@@ -1,14 +1,18 @@
+import { getAvatarById } from "@/services/avatarService"; // Importa o serviço de avatar
 import { UserData } from "@/types/authTypes";
 
+/**
+ * Componente de cabeçalho que exibe as informações do usuário logado,
+ * incluindo seu nome, classe e o avatar selecionado.
+ *
+ * @param user Os dados do usuário autenticado.
+ */
 export function UserHeader({ user }: { user: UserData }) {
+  // Mapeia a 'role' do backend para um nome de classe amigável
   const userClass = user.role === "TEACHER" ? "Mestre" : "Aventureiro";
 
-  const userInitials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .substring(0, 2)
-    .toUpperCase();
+  // Obtém o caminho da imagem do avatar com base no ID do usuário
+  const avatarUrl = getAvatarById(user.avatarId);
 
   return (
     <header className="flex justify-end items-center">
@@ -21,10 +25,9 @@ export function UserHeader({ user }: { user: UserData }) {
           <p className="text-sm text-yellow-300">{userClass}</p>
         </div>
         <div
-          className="w-16 h-16 pixel-border bg-gray-600 flex items-center justify-center text-2xl"
+          className="w-16 h-16 pixel-border bg-gray-600 bg-cover bg-center"
           style={{
-            backgroundImage: `url("/male_avatar.png")`,
-            backgroundSize: "cover",
+            backgroundImage: `url("${avatarUrl}")`,
           }}
         ></div>
       </div>
