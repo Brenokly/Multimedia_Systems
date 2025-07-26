@@ -1,11 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import ButtonLink from "@/components/ui/ButtonLink";
 import { PixelCombobox } from "@/components/ui/PixelCombobox";
 import QuestItem from "@/components/ui/QuestItem";
+import { getUserData } from "@/services/api/tokenManager";
 import { getGlobalQuests } from "@/services/quests.service";
+import { UserData } from "@/types/authTypes";
 import { Quest } from "@/types/quest.types";
-import { useEffect, useState } from "react";
 
 // --- Dados para os Filtros ---
 const difficulties = [
@@ -23,33 +27,53 @@ const subjects = [
   { id: "Arquitetura", label: "Arquitetura" },
 ];
 
-export default function GlobalQuestsPage() {
-  const [allFilteredQuests, setAllFilteredQuests] = useState<Quest[]>([]);
+/**
+ * StudentDashboardPage is the main dashboard for users with the 'STUDENT' role.
+ * It displays a list of global quests that can be filtered and accepted.
+ * This component enforces role-based access control, redirecting non-student users.
+ */
+export default function StudentDashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // States for quest data and filtering
+  const [allFilteredQuests, setAllFilteredQuests] = useState<Quest[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState(difficulties[0]);
   const [selectedSubject, setSelectedSubject] = useState(subjects[0]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const QUESTS_PER_PAGE = 8;
 
-  // Busca os dados e reseta a página quando os filtros mudam
   useEffect(() => {
-    const fetchQuests = async () => {
-      setIsLoading(true);
-      const currentFilters = {
-        difficulty: selectedDifficulty.id,
-        subject: selectedSubject.id,
-      };
-      const data = await getGlobalQuests(currentFilters);
-      setAllFilteredQuests(data);
-      setCurrentPage(1); // Sempre volta para a primeira página ao filtrar
-      setIsLoading(false);
-    };
-    fetchQuests();
-  }, [selectedDifficulty, selectedSubject]);
+    const userData = getUserData();
+    // Role-based authorization check.
+    if (!userData || String(userData.role).toUpperCase() !== "STUDENT") {
+      router.push("/login");
+    } else {
+      setUser(userData);
+    }
+  }, [router]);
 
-  // --- Lógica de Paginação ---
+  // Fetches quests when filters change or on initial load (if user is valid).
+  useEffect(() => {
+    // Only fetch quests if the user has been verified as a student.
+    if (user) {
+      const fetchQuests = async () => {
+        setIsLoading(true);
+        const currentFilters = {
+          difficulty: selectedDifficulty.id,
+          subject: selectedSubject.id,
+        };
+        const data = await getGlobalQuests(currentFilters);
+        setAllFilteredQuests(data);
+        setCurrentPage(1);
+        setIsLoading(false);
+      };
+      fetchQuests();
+    }
+  }, [user, selectedDifficulty, selectedSubject]);
+
+  // --- Pagination Logic ---
   const indexOfLastQuest = currentPage * QUESTS_PER_PAGE;
   const indexOfFirstQuest = indexOfLastQuest - QUESTS_PER_PAGE;
   const currentQuests = allFilteredQuests.slice(
@@ -59,17 +83,25 @@ export default function GlobalQuestsPage() {
   const totalPages = Math.ceil(allFilteredQuests.length / QUESTS_PER_PAGE);
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  // Renders a loading state while verifying user and fetching data.
+  if (!user) {
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <p className="text-white text-xl">
+          Carregando dashboard do Aventureiro...
+        </p>
+      </div>
+    );
+  }
+
+  // Renders the main content.
   return (
     <div>
       <h2 className="text-3xl text-white mb-8 [text-shadow:2px_2px_0_#000]">
@@ -138,11 +170,6 @@ export default function GlobalQuestsPage() {
             onClick={handlePrevPage}
             disabled={currentPage === 1}
             className="btn-pixel text-xs py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: "var(--color-brand-btn)",
-              boxShadow:
-                "inset -4px -4px 0px 0px var(--color-brand-btn-shadow)",
-            }}
           >
             Anterior
           </button>
@@ -153,11 +180,6 @@ export default function GlobalQuestsPage() {
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
             className="btn-pixel text-xs py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: "var(--color-brand-btn)",
-              boxShadow:
-                "inset -4px -4px 0px 0px var(--color-brand-btn-shadow)",
-            }}
           >
             Próxima
           </button>

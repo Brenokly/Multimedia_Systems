@@ -2,7 +2,7 @@
  * Representa os papéis (roles) de usuário disponíveis no sistema.
  * Corresponde ao enum `Role` do backend.
  */
-export type Role = "teacher" | "student";
+export type Role = "TEACHER" | "STUDENT";
 
 /**
  * Representa os dados de um usuário como retornados pela API.

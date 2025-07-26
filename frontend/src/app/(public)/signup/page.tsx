@@ -38,7 +38,7 @@ export default function SignUpPage() {
       const errorMessage =
         error instanceof AxiosError && error.response?.data?.message
           ? error.response.data.message
-          : "Erro ao criar personagem. O email já pode estar em uso.";
+          : "Erro ao criar personagem. O nome de usuário já pode estar em uso.";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -75,11 +75,11 @@ export default function SignUpPage() {
               disabled={isLoading}
             />
             <Input
-              label="Seu Email"
-              type="email"
-              registration={register("email")}
-              error={errors.email?.message}
-              placeholder="seu-email@email.com"
+              label="Seu Nome de Usuário"
+              type="text"
+              registration={register("username")}
+              error={errors.username?.message}
+              placeholder="Seu nome de guerra"
               disabled={isLoading}
             />
             <Input
@@ -99,7 +99,7 @@ export default function SignUpPage() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
-                    value="student"
+                    value="STUDENT"
                     {...register("role")}
                     className="mr-2"
                     disabled={isLoading}
@@ -109,7 +109,7 @@ export default function SignUpPage() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
-                    value="teacher"
+                    value="TEACHER"
                     {...register("role")}
                     className="mr-2"
                     disabled={isLoading}

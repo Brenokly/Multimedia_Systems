@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public interface UserRequest {
 
@@ -14,6 +16,7 @@ public interface UserRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public class Create {
+
         private String name;
 
         @NotBlank
@@ -26,7 +29,10 @@ public interface UserRequest {
         private Role role;
     }
 
+    @Getter
+    @Setter
     public class Update extends Create {
+
         @NotNull
         private long id;
     }

@@ -1,6 +1,14 @@
-export function UserHeader() {
-  const userName = "Breno Klywer";
-  const userClass = "Aventureiro";
+import { UserData } from "@/types/authTypes";
+
+export function UserHeader({ user }: { user: UserData }) {
+  const userClass = user.role === "TEACHER" ? "Mestre" : "Aventureiro";
+
+  const userInitials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
 
   return (
     <header className="flex justify-end items-center">
@@ -9,13 +17,13 @@ export function UserHeader() {
         style={{ backgroundColor: "#252637" }}
       >
         <div className="text-right">
-          <span className="font-semibold text-white">{userName}</span>
+          <span className="font-semibold text-white">{user.name}</span>
           <p className="text-sm text-yellow-300">{userClass}</p>
         </div>
         <div
           className="w-16 h-16 pixel-border bg-gray-600 flex items-center justify-center text-2xl"
           style={{
-            backgroundImage: `url('https://placehold.co/64x64/a16207/ffffff?text=BK')`,
+            backgroundImage: `url("/male_avatar.png")`,
             backgroundSize: "cover",
           }}
         ></div>
