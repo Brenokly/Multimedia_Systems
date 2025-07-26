@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       const userRole = String(response.user.role).toUpperCase();
       if (userRole === "TEACHER") {
-        router.push("/teacher");
+        router.push("/teacher/quests");
       } else {
         router.push("/student");
       }
