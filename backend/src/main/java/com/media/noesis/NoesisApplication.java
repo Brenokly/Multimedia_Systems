@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class NoesisApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(NoesisApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(NoesisApplication.class, args);
+    }
 
 }
