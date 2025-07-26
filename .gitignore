@@ -55,6 +55,12 @@ build/
 .gradle/
 out/
 
+# Arquivos de configuração do Spring Boot com dados sensíveis
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
 # IntelliJ
 *.iml
 *.ipr
