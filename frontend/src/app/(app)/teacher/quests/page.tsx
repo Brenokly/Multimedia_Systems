@@ -21,7 +21,6 @@ export default function TeacherDashboardPage() {
     // Role-based authorization check.
     if (!userData || String(userData.role).toUpperCase() !== "TEACHER") {
       // Redirects if user is not logged in or is not a teacher.
-      // A more sophisticated app might redirect to a specific 'unauthorized' page.
       router.push("/login");
     } else {
       setUser(userData);
@@ -41,7 +40,10 @@ export default function TeacherDashboardPage() {
   // Renders the dashboard content once the user is verified as a teacher.
   return (
     <div className="text-white">
-      <h1 className="text-3xl font-bold mb-8">Dashboard do Mestre</h1>
+      {/* A saudação agora é personalizada, utilizando os dados do usuário. */}
+      <h1 className="text-3xl font-bold mb-8">
+        Dashboard do Mestre, {user?.name}!
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Card para Gerenciar Quests */}
