@@ -1,0 +1,11 @@
+{
+  "name": "meu-projeto",
+  "scripts": {
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && mvn spring-boot:run",
+    "start:frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

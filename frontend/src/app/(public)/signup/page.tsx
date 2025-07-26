@@ -1,18 +1,18 @@
 "use client";
 
-import { signupUserService } from "@/services/authService";
-import {
-  SignupFormInputs,
-  signupSchema,
-} from "@/validators/authValidators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 
+import { signupUserService } from "@/services/authService";
+import { UserCreateRequest } from "@/types/userTypes";
+import { SignupFormInputs, signupSchema } from "@/validators/authValidators";
+
+import { AvatarPicker } from "@/components/ui/AvatarPicker";
 import Button from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -23,22 +23,36 @@ export default function SignUpPage() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
+    defaultValues: {
+      avatarId: undefined,
+    },
   });
 
   const onSubmit = async (data: SignupFormInputs) => {
     setIsLoading(true);
     try {
-      await signupUserService(data);
-      toast.success("Personagem criado! Faça o login para iniciar sua jornada.");
+      const payload: UserCreateRequest = {
+        name: data.name,
+        username: data.username,
+        password: data.password,
+        avatarId: data.avatarId,
+        role: data.role,
+      };
+      await signupUserService(payload);
+
+      toast.success(
+        "Personagem criado! Faça o login para iniciar sua jornada."
+      );
       router.push("/login");
     } catch (error) {
       const errorMessage =
         error instanceof AxiosError && error.response?.data?.message
           ? error.response.data.message
-          : "Erro ao criar personagem. O email já pode estar em uso.";
+          : "Erro ao criar personagem. O nome de usuário já pode estar em uso.";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -61,11 +75,28 @@ export default function SignUpPage() {
         }}
       />
       <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-background-primary">
-        <div className="w-full max-w-md p-8 pixel-border bg-paper-primary">
+        <div className="w-full max-w-lg p-8 pixel-border bg-paper-primary">
           <h1 className="text-2xl text-center mb-6 text-text-primary">
             Criação de Personagem
           </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Controller
+              control={control}
+              name="avatarId"
+              render={({ field }) => (
+                <AvatarPicker
+                  selectedValue={field.value}
+                  onSelect={field.onChange}
+                  disabled={isLoading}
+                />
+              )}
+            />
+            {errors.avatarId && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.avatarId.message}
+              </p>
+            )}
+
             <Input
               label="Seu Nome"
               type="text"
@@ -75,11 +106,11 @@ export default function SignUpPage() {
               disabled={isLoading}
             />
             <Input
-              label="Seu Email"
-              type="email"
-              registration={register("email")}
-              error={errors.email?.message}
-              placeholder="seu-email@email.com"
+              label="Seu Nome de Usuário"
+              type="text"
+              registration={register("username")}
+              error={errors.username?.message}
+              placeholder="Seu nome de guerra"
               disabled={isLoading}
             />
             <Input
@@ -88,6 +119,14 @@ export default function SignUpPage() {
               registration={register("password")}
               error={errors.password?.message}
               placeholder="Mínimo de 8 caracteres"
+              disabled={isLoading}
+            />
+            <Input
+              label="Confirme sua Senha"
+              type="password"
+              registration={register("confirmPassword")}
+              error={errors.confirmPassword?.message}
+              placeholder="Repita a senha"
               disabled={isLoading}
             />
 
@@ -99,7 +138,7 @@ export default function SignUpPage() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
-                    value="student"
+                    value="STUDENT"
                     {...register("role")}
                     className="mr-2"
                     disabled={isLoading}
@@ -109,7 +148,7 @@ export default function SignUpPage() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
-                    value="teacher"
+                    value="TEACHER"
                     {...register("role")}
                     className="mr-2"
                     disabled={isLoading}

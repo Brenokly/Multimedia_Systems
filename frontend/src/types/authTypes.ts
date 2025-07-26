@@ -1,19 +1,27 @@
-// DTO para a requisição de login/registro que o frontend envia
-export interface AuthRequest {
-  login: string;
-  password?: string;
-}
+import { UserDto } from "../types/userTypes";
 
-// A resposta que o backend envia no SUCESSO do login
+/**
+ * Define a estrutura dos dados do usuário que salvamos no frontend.
+ * Para manter a consistência, vamos simplesmente re-exportar o UserDto,
+ * já que os dados do usuário logado são os mesmos do DTO principal.
+ */
+export type UserData = UserDto;
+
+/**
+ * A resposta que o backend envia no SUCESSO do login.
+ * Assumindo que o backend enviará um token e os dados do usuário.
+ */
 export interface LoginResponse {
   token: string;
   user: UserData;
 }
 
-// Como representamos os dados do usuário no frontend
-export interface UserData {
-  id: number;
-  login: string;
-  role: "teacher" | "student";
-  avatar?: string;
+/**
+ * DTO para a requisição de login que o frontend envia.
+ * Você precisará confirmar com o time de backend qual será a estrutura
+ * exata do endpoint de login, mas esta é uma suposição comum.
+ */
+export interface LoginRequest {
+  username: string;
+  password?: string;
 }

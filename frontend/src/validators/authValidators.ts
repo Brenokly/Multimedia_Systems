@@ -1,22 +1,30 @@
 import { z } from 'zod';
 
-// Esquema de Login (continua o mesmo)
 export const loginSchema = z.object({
-  login: z.string().min(1, { message: "O login é obrigatório." }),
-  password: z.string().min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
+  username: z.string().min(1, { message: "O nome de usuário é obrigatório." }),
+  password: z.string().min(1, { message: "A senha é obrigatória." }),
 });
+
 export type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
   name: z.string()
-    .min(1, { message: "O nome é obrigatório." }),
-  email: z.string()
-    .email({ message: "Por favor, insira um email válido." }),
+    .min(3, { message: "O nome deve ter no mínimo 3 caracteres." })
+    .max(30, { message: "O nome deve ter no máximo 30 caracteres." }),
+  username: z.string()
+    .min(3, { message: "O nome de usuário deve ter no mínimo 3 caracteres." })
+    .max(30, { message: "O nome de usuário deve ter no máximo 30 caracteres." }),
   password: z.string()
     .min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
-  role: z.enum(["student", "teacher"], {
-    errorMap: () => ({ message: "Você precisa escolher uma classe." }),
+  confirmPassword: z.string().min(8, { message: "A confirmação de senha é obrigatória." }),
+  avatarId: z.number().min(1, { message: "Por favor, escolha um avatar." }),
+  role: z.enum(["TEACHER", "STUDENT"], {
+    errorMap: () => ({ message: "Você precisa escolher entre Professor ou Aluno." }),
   }),
+})
+.refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não correspondem.",
+    path: ["confirmPassword"],
 });
 
 export type SignupFormInputs = z.infer<typeof signupSchema>;

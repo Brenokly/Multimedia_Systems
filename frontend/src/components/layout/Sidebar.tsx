@@ -1,10 +1,16 @@
 "use client";
+import { clearAuthData } from "@/services/api/tokenManager";
+import { UserData } from "@/types/authTypes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export function Sidebar() {
-  const userRole = "student" as "student" | "teacher";
+export function Sidebar({ user }: { user: UserData }) {
+  const router = useRouter();
 
-  // Fonte pode XS ou lx
+  const handleLogout = () => {
+    clearAuthData();
+    router.push("/login");
+  };
 
   const btnPixel = `
     block py-[12px] px-[24px] uppercase text-lx text-[var(--btn-text)]
@@ -23,7 +29,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-grow space-y-4">
-        {userRole === "student" && (
+        {user.role === "STUDENT" && (
           <ul className="space-y-4">
             <li>
               <Link href="#" className={btnPixel}>
@@ -38,7 +44,7 @@ export function Sidebar() {
           </ul>
         )}
 
-        {userRole === "teacher" && (
+        {user.role === "TEACHER" && (
           <ul className="space-y-4">
             <li>
               <Link href="#" className={btnPixel}>
@@ -76,8 +82,8 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto">
-        <Link
-          href="#"
+        <button
+          onClick={handleLogout}
           className={btnPixel}
           style={{
             backgroundColor: "#d32f2f",
@@ -85,7 +91,7 @@ export function Sidebar() {
           }}
         >
           Sair do Jogo
-        </Link>
+        </button>
       </div>
     </aside>
   );

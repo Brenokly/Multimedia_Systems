@@ -32,7 +32,13 @@ export default function LoginPage() {
       const response = await loginUserService(data);
       saveAuthData(response);
       toast.success("Login bem-sucedido! Bem-vindo, herói!");
-      router.push("/app/quests");
+
+      const userRole = String(response.user.role).toUpperCase();
+      if (userRole === "TEACHER") {
+        router.push("/teacher");
+      } else {
+        router.push("/student");
+      }
     } catch (error) {
       const errorMessage =
         error instanceof AxiosError && error.response?.data?.message
@@ -72,10 +78,10 @@ export default function LoginPage() {
           <h1 className="text-2xl text-center mb-6">Login do Herói</h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-              label="Login"
+              label="Usuário"
               type="text"
-              registration={register("login")}
-              error={errors.login?.message}
+              registration={register("username")}
+              error={errors.username?.message}
               placeholder="Seu nome de guerra"
               disabled={isLoading}
             />
