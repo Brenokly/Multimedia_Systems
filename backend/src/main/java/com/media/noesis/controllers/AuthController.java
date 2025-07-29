@@ -44,7 +44,7 @@ public class AuthController {
         var userInfo = new AuthDto.UserLoginInfo(
                 user.getId(),
                 user.getName(),
-                user.getUsername(),
+                user.getEmail(),
                 user.getAvatarId(),
                 user.getRole()
         );
@@ -59,4 +59,5 @@ public class AuthController {
         userService.create(data);
         return ResponseEntity.status(201).build();
     }
+
 }

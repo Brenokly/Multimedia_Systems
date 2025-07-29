@@ -15,11 +15,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "cards")
 public class Card {
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
+
     @Column(nullable = false)
     private String title;
 
@@ -32,4 +33,5 @@ public class Card {
 
     @Column(nullable = false)
     private CardType cartaType;
+
 }

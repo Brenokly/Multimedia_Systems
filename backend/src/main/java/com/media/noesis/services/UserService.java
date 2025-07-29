@@ -33,11 +33,11 @@ public class UserService {
     public void create(final UserRequest.Create request) {
         final User entity = new User();
         entity.setName(request.getName());
-        entity.setUsername(request.getUsername());
+        entity.setEmail(request.getUsername());
         entity.setAvatarId(request.getAvatarId());
         entity.setRole(request.getRole());
 
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
+        final var hashedPassword = passwordEncoder.encode(request.getPassword());
         entity.setPassword(hashedPassword);
 
         repository.save(entity);
@@ -55,7 +55,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + request.getId() + " não encontrado para atualização."));
 
         entity.setName(request.getName());
-        entity.setUsername(request.getUsername());
+        entity.setEmail(request.getUsername());
         entity.setAvatarId(request.getAvatarId());
         entity.setRole(request.getRole());
 
@@ -70,4 +70,5 @@ public class UserService {
     public void delete(final long id) {
         repository.deleteById(id);
     }
+
 }

@@ -34,7 +34,7 @@ public class TokenService {
 
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuer("NoesisAPI")
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(Date.from(generateExpirationDate()))
@@ -81,4 +81,5 @@ public class TokenService {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

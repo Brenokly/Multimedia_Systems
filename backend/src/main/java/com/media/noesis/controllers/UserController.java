@@ -73,7 +73,7 @@ public class UserController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable @NotNull final long id) {
+    public ResponseEntity<UserDto> delete(@PathVariable @NotNull final long id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
