@@ -34,3 +34,8 @@ springdoc:
   api-docs:
     path: /api-docs
   use-fqn: true
+
+api:
+  security:
+    token:
+      secret: 5879ad1bbee6df4871bb60272fba7c9742025d7dbd5f6dcae5b88362838cd1022746971fe25efe86acaefe4a49db767ef50d035d798c9d070d53bfa1a501409a
