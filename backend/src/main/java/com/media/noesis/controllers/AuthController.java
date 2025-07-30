@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid UserRequest.Create data) {
+    public ResponseEntity<Void> register(@RequestBody @Valid UserRequest data) {
         // Delega a criação para o UserService, que já criptografa a senha
         userService.create(data);
         return ResponseEntity.status(201).build();

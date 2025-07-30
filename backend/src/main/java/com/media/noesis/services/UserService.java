@@ -6,9 +6,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.media.noesis.converters.ClanConverter;
 import com.media.noesis.converters.UserConverter;
+import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
+import com.media.noesis.entities.Clan;
 import com.media.noesis.entities.User;
 import com.media.noesis.repositories.UserRepository;
 
@@ -23,6 +26,8 @@ public class UserService {
     private final UserConverter converter;
     private final PasswordEncoder passwordEncoder;
 
+    private final ClanConverter clanConverter;
+
     public List<UserDto> findAll() {
         return repository.findAll().stream()
                 .map(converter::toDto)
@@ -30,7 +35,7 @@ public class UserService {
     }
 
     @Transactional
-    public void create(final UserRequest.Create request) {
+    public void create(final UserRequest request) {
         final User entity = new User();
         entity.setName(request.getName());
         entity.setEmail(request.getUsername());
@@ -50,10 +55,10 @@ public class UserService {
     }
 
     @Transactional
-    public void update(final UserRequest.Update request) {
-        final User entity = repository.findById(request.getId())
+    public void update(final long id, final UserRequest request) {
+        final User entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Usuário com id " + request.getId() + " não encontrado para atualização."));
+                        "Usuário com id " + id + " não encontrado para atualização."));
 
         entity.setName(request.getName());
         entity.setEmail(request.getUsername());
@@ -70,6 +75,19 @@ public class UserService {
     @Transactional
     public void delete(final long id) {
         repository.deleteById(id);
+    }
+
+    public List<ClanDto> getManagedClans(final User owner) {
+        return owner.getManagedClans().stream()
+                .map(clanConverter::toDto)
+                .toList();
+    }
+
+    public List<ClanDto> getJoinedClans(final User integrant) {
+        List<Clan> joinedClans = integrant.getJoinedClans();
+        return joinedClans.stream()
+                .map(clanConverter::toDto)
+                .toList();
     }
 
 }

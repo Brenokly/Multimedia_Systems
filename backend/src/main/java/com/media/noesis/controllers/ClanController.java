@@ -3,6 +3,7 @@ package com.media.noesis.controllers;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
+import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.ClanService;
 
@@ -50,7 +52,9 @@ public class ClanController {
             service.create(request, owner);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        } catch (final UnauthorizedException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage())).build();
         }
     }
 
@@ -60,7 +64,7 @@ public class ClanController {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
@@ -73,7 +77,7 @@ public class ClanController {
             service.update(id, request);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
@@ -85,7 +89,8 @@ public class ClanController {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final Exception e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.EXPECTATION_FAILED, e.getMessage()))
+                    .build();
         }
     }
 
@@ -98,7 +103,7 @@ public class ClanController {
             service.join(joinCode, integrant);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
@@ -111,7 +116,7 @@ public class ClanController {
             service.leave(id, integrant);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 

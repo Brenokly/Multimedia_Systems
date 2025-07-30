@@ -17,9 +17,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -51,9 +54,11 @@ public class User implements UserDetails {
     private Role role;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "clans_integrations", joinColumns = @JoinColumn(name = "integrant"), inverseJoinColumns = @JoinColumn(name = "clan"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "clan", "integrant" }))
     private List<Clan> joinedClans;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Clan> managedClans;
 
     /*

@@ -3,6 +3,7 @@ package com.media.noesis.controllers;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
+import com.media.noesis.services.AuthService;
 import com.media.noesis.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +34,7 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
     private final UserService service;
+    private final AuthService authService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todos os usuários ativos cadastrados.")
@@ -44,7 +48,7 @@ public class UserController {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
@@ -52,12 +56,12 @@ public class UserController {
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")
     public ResponseEntity<UserDto> update(@PathVariable @NotNull final long id,
-            @RequestBody @Valid final UserRequest.Update request) {
+            @RequestBody @Valid final UserRequest request) {
         try {
-            service.update(request);
+            service.update(id, request);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
@@ -70,6 +74,32 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @GetMapping("managed-clans")
+    @Operation(summary = "Listar clãs gerenciados", description = "Listar clãs gerenciados pelo usuário logado.")
+    public ResponseEntity<List<ClanDto>> getManagedClans() {
+        try {
+            final var owner = authService.getLoggedUser();
+            final var clans = service.getManagedClans(owner);
+
+            return ResponseEntity.ok(clans);
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("joined-clans")
+    @Operation(summary = "Listar clãs", description = "Listar clãs do usuário logado.")
+    public ResponseEntity<List<ClanDto>> getJoinedClans() {
+        try {
+            final var owner = authService.getLoggedUser();
+            final var clans = service.getJoinedClans(owner);
+
+            return ResponseEntity.ok(clans);
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 
