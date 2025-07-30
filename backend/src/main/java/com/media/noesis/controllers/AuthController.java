@@ -1,5 +1,6 @@
 package com.media.noesis.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,8 +47,7 @@ public class AuthController {
                 user.getName(),
                 user.getEmail(),
                 user.getAvatarId(),
-                user.getRole()
-        );
+                user.getRole());
 
         // Retorna o token e as informações do usuário
         return ResponseEntity.ok(new AuthDto.LoginResponse(token, userInfo));
@@ -57,7 +57,7 @@ public class AuthController {
     public ResponseEntity<Void> register(@RequestBody @Valid UserRequest data) {
         // Delega a criação para o UserService, que já criptografa a senha
         userService.create(data);
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
