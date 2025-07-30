@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.media.noesis.converters.ClanConverter;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
+import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
 import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.repositories.ClanRepository;
@@ -21,20 +22,16 @@ public class ClanService {
     private final ClanRepository repository;
     private final ClanConverter converter;
 
-    private final AuthService authService;
-
     public List<ClanDto> findAll() {
         return repository.findAll().stream()
                 .map(converter::toDto)
                 .toList();
     }
 
-    public void create(final ClanRequest request) {
-        final var user = authService.getLoggedUser();
-
-        if (Role.TEACHER.equals(user.getRole())) {
+    public void create(final ClanRequest request, final User owner) {
+        if (Role.TEACHER.equals(owner.getRole())) {
             final var entity = converter.toEntity(request)
-                    .setOwner(user);
+                    .setOwner(owner);
 
             repository.save(entity);
         } else {

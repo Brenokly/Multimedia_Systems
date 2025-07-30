@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
+import com.media.noesis.services.AuthService;
 import com.media.noesis.services.ClanService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ import lombok.AllArgsConstructor;
 public class ClanController {
 
     private final ClanService service;
+    private final AuthService authService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todos os clãs cadastrados.")
@@ -44,7 +46,8 @@ public class ClanController {
     @Operation(summary = "Cadastrar", description = "Cadastrar um novo clã.")
     public ResponseEntity<ClanDto> create(@RequestBody @Valid final ClanRequest request) {
         try {
-            service.create(request);
+            final var owner = authService.getLoggedUser();
+            service.create(request, owner);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
