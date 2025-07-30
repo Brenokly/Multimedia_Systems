@@ -2,9 +2,13 @@ package com.media.noesis.entities;
 
 import java.util.List;
 
+import com.media.noesis.enums.Level;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,7 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -21,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "clans")
-public class Clan {
+@Table(name = "questions")
+public class Question {
 
     @Id
     @Column
@@ -30,20 +33,21 @@ public class Clan {
     private long id;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    private User owner;
+    private User author;
+    
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    private Clan clan;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Level level;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false, unique = true)
-    private String joinCode;
+    private String statement;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "clans_integrations", joinColumns = @JoinColumn(name = "clan"), inverseJoinColumns = @JoinColumn(name = "integrant"), uniqueConstraints = @UniqueConstraint(columnNames = {
-            "clan", "integrant" }))
-    private List<User> integrants;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clan")
-    private List<Question> questions;
+    @JoinTable(name = "questions_topics", joinColumns = @JoinColumn(name = "question"), inverseJoinColumns = @JoinColumn(name = "topic"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "question", "topic" }))
+    private List<Topic> topics;
 
 }

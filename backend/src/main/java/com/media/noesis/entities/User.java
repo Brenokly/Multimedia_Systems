@@ -61,6 +61,9 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Clan> managedClans;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<Question> authoredQuestions;
+
     /*
      * Métodos da interface UserDetails
      */
