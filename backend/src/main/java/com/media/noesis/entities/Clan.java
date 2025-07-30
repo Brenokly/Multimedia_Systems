@@ -25,11 +25,11 @@ public class Clan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
-    private String joinCode;
-
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
+    private String joinCode;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private User owner;

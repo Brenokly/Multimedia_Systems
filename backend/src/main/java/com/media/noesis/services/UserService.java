@@ -44,15 +44,16 @@ public class UserService {
     }
 
     public UserDto findById(final long id) {
-        final var entity = repository.findById(id)
+        return repository.findById(id)
+                .map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
-        return converter.toDto(entity);
     }
 
     @Transactional
     public void update(final UserRequest.Update request) {
         final User entity = repository.findById(request.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + request.getId() + " não encontrado para atualização."));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Usuário com id " + request.getId() + " não encontrado para atualização."));
 
         entity.setName(request.getName());
         entity.setEmail(request.getUsername());

@@ -32,6 +32,7 @@ public interface UserRequest {
 
         @NotNull
         private Role role;
+
     }
 
     @Getter
@@ -40,5 +41,7 @@ public interface UserRequest {
 
         @NotNull
         private long id;
+
     }
+
 }
