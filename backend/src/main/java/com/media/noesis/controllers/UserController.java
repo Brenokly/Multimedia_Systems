@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,14 +36,6 @@ public class UserController {
     @Operation(summary = "Listar todos", description = "Listar todos os usuários ativos cadastrados.")
     public ResponseEntity<List<UserDto>> getAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
-
-    @PostMapping
-    @Transactional
-    @Operation(summary = "Cadastrar", description = "Cadastrar um novo usuário ativo.")
-    public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest.Create request) {
-        service.create(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")

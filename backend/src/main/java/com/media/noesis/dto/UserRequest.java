@@ -2,6 +2,7 @@ package com.media.noesis.dto;
 
 import com.media.noesis.enums.Role;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ public interface UserRequest {
 
         private String name;
 
+        @Email
         @NotBlank
         private String username;
 
