@@ -41,7 +41,7 @@ public class ClanController {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("{id}")
+    @PostMapping
     @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar um novo clã.")
     public ResponseEntity<ClanDto> create(@RequestBody @Valid final ClanRequest request) {
@@ -86,6 +86,32 @@ public class ClanController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @PostMapping("{joinCode}/join")
+    @Transactional
+    @Operation(summary = "Ingressar", description = "Juntar-se a um clã.")
+    public ResponseEntity<ClanDto> join(@PathVariable @NotNull final String joinCode) {
+        try {
+            final var integrant = authService.getLoggedUser();
+            service.join(joinCode, integrant);
+            return ResponseEntity.noContent().build();
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("{id}/leave")
+    @Transactional
+    @Operation(summary = "Abandonar", description = "Sair de um clã.")
+    public ResponseEntity<ClanDto> leave(@PathVariable @NotNull final long id) {
+        try {
+            final var integrant = authService.getLoggedUser();
+            service.leave(id, integrant);
+            return ResponseEntity.noContent().build();
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

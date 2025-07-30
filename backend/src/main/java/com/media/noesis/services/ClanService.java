@@ -46,15 +46,37 @@ public class ClanService {
     }
 
     public void update(final long id, final ClanRequest request) {
-        final var entity = repository.findById(id)
-                .map(original -> converter.toEntity(request, original))
-                .orElseThrow(() -> new EntityNotFoundException("Clã não localizado!"));
-
-        repository.save(entity);
+        repository.findById(id)
+                .ifPresentOrElse(
+                        original -> {
+                            final var modified = converter.toEntity(request, original);
+                            repository.save(modified);
+                        },
+                        () -> new EntityNotFoundException("Clã não localizado!"));
     }
 
     public void delete(final long id) {
         repository.deleteById(id);
+    }
+
+    public void join(final String joinCode, final User user) {
+        repository.findByJoinCode(joinCode)
+                .ifPresentOrElse(
+                        entity -> {
+                            entity.getIntegrants().add(user);
+                            repository.save(entity);
+                        },
+                        () -> new EntityNotFoundException("Clã não localizado!"));
+    }
+
+    public void leave(final long id, final User user) {
+        repository.findById(id)
+                .ifPresentOrElse(
+                        entity -> {
+                            entity.getIntegrants().remove(user);
+                            repository.save(entity);
+                        },
+                        () -> new EntityNotFoundException("Clã não localizado!"));
     }
 
 }
