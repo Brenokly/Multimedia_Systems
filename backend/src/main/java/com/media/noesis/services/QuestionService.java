@@ -3,6 +3,7 @@ package com.media.noesis.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.media.noesis.converters.QuestionConverter;
 import com.media.noesis.converters.TopicConverter;
@@ -33,7 +34,7 @@ public class QuestionService {
                 .toList();
     }
 
-    public void create(final QuestionRequest request, final User author, final long clanId) {
+    public void create(final QuestionRequest.Create request, final User author, final long clanId) {
         final var clan = clanRepository.findById(clanId)
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
 
@@ -44,10 +45,8 @@ public class QuestionService {
         } else {
             final var entity = converter.toEntity(request)
                     .setAuthor(author)
-                    .setClan(clan)
-                    .setTopics(request.getTopics().stream()
-                            .map(topicConverter::toEntity)
-                            .toList());
+                    .setClan(clan);
+            entity.getOptions().forEach(option -> option.setQuestion(entity));
 
             repository.save(entity);
         }
@@ -59,15 +58,17 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
+    @Transactional
     public void update(final long id, final QuestionRequest request) {
         repository.findById(id)
                 .ifPresentOrElse(
                         original -> {
-                            final var modified = converter.toEntity(request, original)
-                                    .setTopics(request.getTopics().stream()
-                                            .map(topicConverter::toEntity)
-                                            .toList());
+                            final var modified = converter.toEntity(request, original);
                             repository.save(modified);
+
+                            modified.setTopics(request.getTopics().stream()
+                                    .map(topicConverter::toEntity)
+                                    .toList());
                         },
                         () -> new EntityNotFoundException("Quest não localizada!"));
     }

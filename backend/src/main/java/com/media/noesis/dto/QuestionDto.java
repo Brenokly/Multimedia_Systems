@@ -2,7 +2,6 @@ package com.media.noesis.dto;
 
 import java.util.List;
 
-import com.media.noesis.entities.Topic;
 import com.media.noesis.enums.Level;
 
 import lombok.Data;
@@ -13,9 +12,10 @@ import lombok.NoArgsConstructor;
 public class QuestionDto {
 
     private long id;
-    private ClanDto clan;
+    private long clanId;
     private Level level;
     private String statement;
-    private List<Topic> topics;
+    private List<String> topics;
+    private List<OptionDto> options;
 
 }

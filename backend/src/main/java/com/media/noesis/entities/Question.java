@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class Question {
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private User author;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private Clan clan;
 
@@ -44,6 +45,9 @@ public class Question {
 
     @Column(nullable = false)
     private String statement;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    private List<Option> options;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "questions_topics", joinColumns = @JoinColumn(name = "question"), inverseJoinColumns = @JoinColumn(name = "topic"), uniqueConstraints = @UniqueConstraint(columnNames = {

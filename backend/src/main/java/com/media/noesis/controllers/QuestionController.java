@@ -47,7 +47,7 @@ public class QuestionController {
     @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar uma nova quest.")
     public ResponseEntity<QuestionDto> create(@PathVariable @NotNull final long clanId,
-            @RequestBody @Valid final QuestionRequest request) {
+            @RequestBody @Valid final QuestionRequest.Create request) {
         try {
             final var owner = authService.getLoggedUser();
             service.create(request, owner, clanId);
