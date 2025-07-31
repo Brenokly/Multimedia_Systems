@@ -6,21 +6,19 @@ import { useEffect, useState } from "react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import QuestItem from "@/components/ui/QuestItem";
 import { getUserData } from "@/services/api/tokenManager";
-// import { getTeacherQuests } from "@/services/quests.service"; // Será necessário criar este serviço
+import { getAllQuests } from "@/services/questService";
 import { UserData } from "@/types/authTypes";
-// import { Question } from "@/types/questTypes";
-
-// Mock de dados temporário, com os IDs corrigidos para string para alinhar com o tipo Quest.
+import { QuestionDto } from "@/types/questTypes";
 
 /**
- * TeacherQuestsPage exibe a lista de quests criadas pelo professor.
- * Implementa a verificação de autenticação e autorização para garantir que
- * apenas usuários com a role 'TEACHER' possam acessar a página.
+ * TeacherQuestsPage exibe a lista de todas as quests disponíveis no sistema
+ * para que o professor possa gerenciá-las.
+ * Implementa a verificação de autenticação e autorização.
  */
 export default function TeacherQuestsPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserData | null>(null);
-  const [quests, setQuests] = useState<Question[]>([]);
+  const [quests, setQuests] = useState<QuestionDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,18 +29,21 @@ export default function TeacherQuestsPage() {
     // Verificação de segurança: usuário deve estar logado e ser um professor.
     if (!userData || String(userData.role).toUpperCase() !== "TEACHER") {
       router.push("/login");
-      return; // Interrompe a execução para evitar a busca de dados
+      return;
     }
 
     setUser(userData);
 
-    // Simula a busca de dados da API
     const fetchQuests = async () => {
-      setIsLoading(true);
-      // TODO: Substituir o mock pela chamada de serviço real:
-      // const data = await getTeacherQuests(userData.id);
-      //setQuests(allQuestsMock);
-      setIsLoading(false);
+      try {
+        // Busca todas as quests cadastradas no sistema
+        const data = await getAllQuests();
+        setQuests(data);
+      } catch (error) {
+        console.error("Falha ao buscar as quests:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchQuests();
@@ -62,7 +63,6 @@ export default function TeacherQuestsPage() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  // Renderiza um estado de carregamento enquanto a verificação e a busca de dados ocorrem.
   if (isLoading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
@@ -91,7 +91,7 @@ export default function TeacherQuestsPage() {
           currentQuests.map((quest) => (
             <QuestItem
               key={quest.id}
-              quest={quest}
+              quest={{ id: quest.id, title: quest.statement }} // Adapta os dados para o componente QuestItem
               action={
                 <ButtonLink
                   href={`/teacher/quests/edit/${quest.id}`}
@@ -105,7 +105,7 @@ export default function TeacherQuestsPage() {
           ))
         ) : (
           <p className="text-center text-white">
-            Você ainda não forjou nenhuma quest.
+            Nenhuma quest encontrada no sistema.
           </p>
         )}
       </div>

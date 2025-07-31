@@ -1,44 +1,41 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ButtonLink from "@/components/ui/ButtonLink";
 import { PixelCombobox } from "@/components/ui/PixelCombobox";
 import QuestItem from "@/components/ui/QuestItem";
 import { getUserData } from "@/services/api/tokenManager";
-import { getGlobalQuests } from "@/services/quests.service";
-import { UserData } from "@/types/authTypes";
-import { Question } from "@/types/questTypes";
+import { listQuestionsByClan } from "@/services/clanService";
+import { QuestionDto } from "@/types/questTypes";
 
-// --- Dados para os Filtros ---
+// --- Dados para os Filtros (alinhados com o backend) ---
 const difficulties = [
   { id: "all", label: "Dificuldade" },
-  { id: "Fácil", label: "Fácil" },
-  { id: "Médio", label: "Médio" },
-  { id: "Difícil", label: "Difícil" },
+  { id: "EASY", label: "Fácil" },
+  { id: "MEDIUM", label: "Médio" },
+  { id: "HARD", label: "Difícil" },
 ];
 
 const subjects = [
   { id: "all", label: "Assunto" },
-  { id: "Estrutura de Dados", label: "Estrutura de Dados" },
-  { id: "Algoritmos", label: "Algoritmos" },
-  { id: "Redes", label: "Redes" },
-  { id: "Arquitetura", label: "Arquitetura" },
+  { id: "ED1", label: "Estrutura de Dados I" },
+  { id: "ED2", label: "Estrutura de Dados II" },
+  { id: "REDES", label: "Redes" },
 ];
 
 /**
- * StudentDashboardPage is the main dashboard for users with the 'STUDENT' role.
- * It displays a list of global quests that can be filtered and accepted.
- * This component enforces role-based access control, redirecting non-student users.
+ * StudentDashboardPage é o dashboard principal para usuários do tipo 'STUDENT'.
+ * Exibe uma lista de quests globais que podem ser filtradas e aceites.
+ * Este componente impõe o controlo de acesso baseado em funções.
  */
 export default function StudentDashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // States for quest data and filtering
-  const [allFilteredQuests, setAllFilteredQuests] = useState<Question[]>([]);
+  // Estados para dados e filtros
+  const [allQuests, setAllQuests] = useState<QuestionDto[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState(difficulties[0]);
   const [selectedSubject, setSelectedSubject] = useState(subjects[0]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,41 +43,47 @@ export default function StudentDashboardPage() {
 
   useEffect(() => {
     const userData = getUserData();
-    // Role-based authorization check.
+    // Verificação de segurança e autorização
     if (!userData || String(userData.role).toUpperCase() !== "STUDENT") {
       router.push("/login");
-    } else {
-      setUser(userData);
+      return;
     }
+
+    const fetchGlobalQuests = async () => {
+      try {
+        // Por convenção, o Clã Global tem o ID 1.
+        const data = await listQuestionsByClan(1);
+        setAllQuests(data);
+      } catch (error) {
+        console.error("Falha ao buscar as quests globais:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGlobalQuests();
   }, [router]);
 
-  // Fetches quests when filters change or on initial load (if user is valid).
-  useEffect(() => {
-    // Only fetch quests if the user has been verified as a student.
-    if (user) {
-      const fetchQuests = async () => {
-        setIsLoading(true);
-        const currentFilters = {
-          difficulty: selectedDifficulty.id,
-          subject: selectedSubject.id,
-        };
-        const data = await getGlobalQuests(currentFilters);
-        setAllFilteredQuests(data);
-        setCurrentPage(1);
-        setIsLoading(false);
-      };
-      fetchQuests();
-    }
-  }, [user, selectedDifficulty, selectedSubject]);
+  // Aplica os filtros aos dados recebidos da API
+  const filteredQuests = useMemo(() => {
+    return allQuests.filter((quest) => {
+      const difficultyMatch =
+        selectedDifficulty.id === "all" ||
+        quest.level === selectedDifficulty.id;
+      // A filtragem de tópicos verifica se algum dos tópicos da quest corresponde ao filtro
+      const subjectMatch =
+        selectedSubject.id === "all" ||
+        quest.topics.includes(selectedSubject.id);
+      return difficultyMatch && subjectMatch;
+    });
+  }, [allQuests, selectedDifficulty, selectedSubject]);
 
-  // --- Pagination Logic ---
-  const indexOfLastQuest = currentPage * QUESTS_PER_PAGE;
-  const indexOfFirstQuest = indexOfLastQuest - QUESTS_PER_PAGE;
-  const currentQuests = allFilteredQuests.slice(
-    indexOfFirstQuest,
-    indexOfLastQuest
+  // --- Lógica de Paginação ---
+  const totalPages = Math.ceil(filteredQuests.length / QUESTS_PER_PAGE);
+  const currentQuests = filteredQuests.slice(
+    (currentPage - 1) * QUESTS_PER_PAGE,
+    currentPage * QUESTS_PER_PAGE
   );
-  const totalPages = Math.ceil(allFilteredQuests.length / QUESTS_PER_PAGE);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -90,18 +93,21 @@ export default function StudentDashboardPage() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  // Renders a loading state while verifying user and fetching data.
-  if (!user) {
+  // Efeito para voltar à primeira página sempre que um filtro é alterado
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedDifficulty, selectedSubject]);
+
+  if (isLoading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
         <p className="text-white text-xl">
-          Carregando dashboard do Aventureiro...
+          A carregar o dashboard do Aventureiro...
         </p>
       </div>
     );
   }
 
-  // Renders the main content.
   return (
     <div>
       <h2 className="text-3xl text-white mb-8 [text-shadow:2px_2px_0_#000]">
@@ -139,16 +145,14 @@ export default function StudentDashboardPage() {
         className="p-8 pixel-border space-y-4 rounded"
         style={{ backgroundColor: "#252637" }}
       >
-        {isLoading ? (
-          <p className="text-center text-white">Carregando quests...</p>
-        ) : currentQuests.length > 0 ? (
+        {currentQuests.length > 0 ? (
           currentQuests.map((quest) => (
             <QuestItem
               key={quest.id}
-              Question={quest}
+              quest={{ id: quest.id, title: quest.statement }}
               action={
                 <ButtonLink
-                  href={`/quests/${quest.id}`}
+                  href={`/student/quests/${quest.id}`}
                   variant="primary"
                   className="!text-xs !py-2 !px-4"
                 >
