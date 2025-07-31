@@ -8,7 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 public class AuthDto {
 
     public record LoginRequest(
-            @NotBlank @Email String username,
+            @NotBlank
+            @Email String email,
             @NotBlank String password) {
 
     }
@@ -16,7 +17,7 @@ public class AuthDto {
     public record UserLoginInfo(
             long id,
             String name,
-            String username,
+            String email,
             int avatarId,
             Role role) {
 

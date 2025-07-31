@@ -22,6 +22,6 @@ export interface LoginResponse {
  * exata do endpoint de login, mas esta é uma suposição comum.
  */
 export interface LoginRequest {
-  username: string;
-  password?: string;
+  email: string;
+  password: string;
 }

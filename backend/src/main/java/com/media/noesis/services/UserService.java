@@ -38,7 +38,7 @@ public class UserService {
     public void create(final UserRequest request) {
         final User entity = new User();
         entity.setName(request.getName());
-        entity.setEmail(request.getUsername());
+        entity.setEmail(request.getEmail());
         entity.setAvatarId(request.getAvatarId());
         entity.setRole(request.getRole());
 
@@ -58,10 +58,10 @@ public class UserService {
     public void update(final long id, final UserRequest request) {
         final User entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Usuário com id " + id + " não encontrado para atualização."));
+                "Usuário com id " + id + " não encontrado para atualização."));
 
         entity.setName(request.getName());
-        entity.setEmail(request.getUsername());
+        entity.setEmail(request.getEmail());
         entity.setAvatarId(request.getAvatarId());
         entity.setRole(request.getRole());
 

@@ -11,7 +11,7 @@ export type Role = "TEACHER" | "STUDENT";
 export interface UserDto {
   id: number;
   name: string;
-  username: string;
+  email: string;
   avatarId: number;
   role: Role;
 }
@@ -22,7 +22,7 @@ export interface UserDto {
  */
 export interface UserCreateRequest {
   name: string;
-  username: string;
+  email: string;
   password: string;
   avatarId: number;
   role: Role;
@@ -35,7 +35,7 @@ export interface UserCreateRequest {
 export interface UserUpdateRequest {
   id: number;
   name: string;
-  username: string;
+  email: string;
   password?: string;
   avatarId: number;
   role: Role;

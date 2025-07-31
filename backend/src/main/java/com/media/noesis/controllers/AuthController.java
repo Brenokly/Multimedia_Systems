@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthDto.LoginResponse> login(@RequestBody @Valid AuthDto.LoginRequest data) {
         // Cria um objeto de autenticação com os dados recebidos
-        var authToken = new UsernamePasswordAuthenticationToken(data.username(), data.password());
+        var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
         // O Spring Security autentica o usuário
         var authentication = authenticationManager.authenticate(authToken);

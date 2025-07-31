@@ -43,11 +43,6 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<!-- Spring Security -->
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
 
 		<!-- Dependências de bancos de dados -->
 		<dependency>

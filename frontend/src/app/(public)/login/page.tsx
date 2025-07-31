@@ -43,7 +43,7 @@ export default function LoginPage() {
       const errorMessage =
         error instanceof AxiosError && error.response?.data?.message
           ? error.response.data.message
-          : "Login ou senha inválidos. Tente novamente.";
+          : "Email ou senha inválidos. Tente novamente.";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -80,9 +80,9 @@ export default function LoginPage() {
             <Input
               label="Usuário"
               type="text"
-              registration={register("username")}
-              error={errors.username?.message}
-              placeholder="Seu nome de guerra"
+              registration={register("email")}
+              error={errors.email?.message}
+              placeholder="Seu email"
               disabled={isLoading}
             />
             <div className="mb-6">

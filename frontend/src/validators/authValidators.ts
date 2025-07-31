@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  username: z.string().min(1, { message: "O nome de usuário é obrigatório." }),
+  email: z.string().email({ message: "Por favor, insira um email válido." }),
   password: z.string().min(1, { message: "A senha é obrigatória." }),
 });
 
@@ -11,9 +11,8 @@ export const signupSchema = z.object({
   name: z.string()
     .min(3, { message: "O nome deve ter no mínimo 3 caracteres." })
     .max(30, { message: "O nome deve ter no máximo 30 caracteres." }),
-  username: z.string()
-    .min(3, { message: "O nome de usuário deve ter no mínimo 3 caracteres." })
-    .max(30, { message: "O nome de usuário deve ter no máximo 30 caracteres." }),
+  email: z.string()
+    .email({ message: "Por favor, insira um email válido." }),
   password: z.string()
     .min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
   confirmPassword: z.string().min(8, { message: "A confirmação de senha é obrigatória." }),

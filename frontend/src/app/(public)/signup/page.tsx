@@ -37,7 +37,7 @@ export default function SignUpPage() {
     try {
       const payload: UserCreateRequest = {
         name: data.name,
-        username: data.username,
+        email: data.email,
         password: data.password,
         avatarId: data.avatarId,
         role: data.role,
@@ -106,11 +106,11 @@ export default function SignUpPage() {
               disabled={isLoading}
             />
             <Input
-              label="Seu Nome de Usuário"
+              label="Seu email"
               type="text"
-              registration={register("username")}
-              error={errors.username?.message}
-              placeholder="Seu nome de guerra"
+              registration={register("email")}
+              error={errors.email?.message}
+              placeholder="Seu email"
               disabled={isLoading}
             />
             <Input
