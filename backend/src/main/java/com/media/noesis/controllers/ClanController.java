@@ -122,7 +122,7 @@ public class ClanController {
     }
 
     @GetMapping("{id}/questions")
-    @Operation(summary = "Buscar", description = "Buscar um clã pelo ID.")
+    @Operation(summary = "Listar questões", description = "Listar questões de um clã.")
     public ResponseEntity<List<QuestionDto>> listQuestions(@PathVariable @NotNull final long id) {
         try {
             final var questions = service.listQuestions(id);
