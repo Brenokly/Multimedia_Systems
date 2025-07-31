@@ -79,6 +79,13 @@ public class QuestionService {
         repository.deleteById(id);
     }
 
+
+    public List<QuestionDto> findByAuthorId(long authorId) {
+        return repository.findByAuthorId(authorId).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
     public List<AnswerDto> listAnswers(final long id) {
         return repository.findById(id)
                 .map(question -> {
@@ -89,5 +96,6 @@ public class QuestionService {
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
+
 
 }

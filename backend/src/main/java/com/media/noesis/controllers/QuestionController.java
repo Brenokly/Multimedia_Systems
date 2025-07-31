@@ -102,4 +102,9 @@ public class QuestionController {
         }
     }
 
+    @GetMapping("author/{authorId}")
+    @Operation(summary = "Buscar por autor", description = "Buscar questões por ID do autor.")
+    public ResponseEntity<List<QuestionDto>> getByAuthorId(@PathVariable @NotNull final long authorId) {
+        return new ResponseEntity<>(service.findByAuthorId(authorId), HttpStatus.OK);
+    }
 }

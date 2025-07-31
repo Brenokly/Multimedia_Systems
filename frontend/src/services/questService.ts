@@ -16,6 +16,16 @@ export const getAllQuests = async (): Promise<QuestionDto[]> => {
 };
 
 /**
+ * Busca todas as quests criadas por um autor específico.
+ * @param authorId - O ID do professor (autor).
+ * @returns Uma promessa com a lista de quests do autor.
+ */
+export const getQuestsByAuthorId = async (authorId: number): Promise<QuestionDto[]> => {
+  const response = await apiClient.get<QuestionDto[]>(`${QUESTIONS_BASE_URL}/author/${authorId}`);
+  return response.data;
+};
+
+/**
  * Busca uma questão específica pelo seu ID.
  * @param id - O ID da questão a ser buscada.
  * @returns Uma promessa com os dados da questão.
@@ -80,3 +90,5 @@ export const updateOption = async (id: number, optionData: OptionRequest): Promi
 export const deleteOption = async (id: number): Promise<void> => {
     await apiClient.delete(`${OPTIONS_BASE_URL}/${id}`);
 };
+
+

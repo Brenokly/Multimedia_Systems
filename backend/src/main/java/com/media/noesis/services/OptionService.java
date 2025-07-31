@@ -24,16 +24,16 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class OptionService {
-
+  
     private static final String NOT_FOUND_MESSAGE = "Alternativa não localizada!";
 
-    private OptionRepository repository;
-    private OptionConverter converter;
+    private final OptionRepository repository;
+    private final OptionConverter converter;
 
-    private AuthService authService;
-    private QuestionService questionService;
-    private AnswerConverter answerConverter;
-    private QuestionRepository questionRepository;
+    private final AuthService authService;
+    private final QuestionService questionService;
+    private final AnswerConverter answerConverter;
+    private final QuestionRepository questionRepository;
 
     public List<OptionDto> findAll() {
         return repository.findAll().stream()

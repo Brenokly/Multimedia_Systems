@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import QuestItem from "@/components/ui/QuestItem";
 import { getUserData } from "@/services/api/tokenManager";
-import { getAllQuests } from "@/services/questService";
+import { getQuestsByAuthorId } from "@/services/questService";
 import { UserData } from "@/types/authTypes";
 import { QuestionDto } from "@/types/questTypes";
 
 /**
- * TeacherQuestsPage exibe a lista de todas as quests disponíveis no sistema
- * para que o professor possa gerenciá-las.
+ * TeacherQuestsPage exibe a lista de quests criadas pelo professor logado.
  * Implementa a verificação de autenticação e autorização.
  */
 export default function TeacherQuestsPage() {
@@ -34,19 +33,19 @@ export default function TeacherQuestsPage() {
 
     setUser(userData);
 
-    const fetchQuests = async () => {
+    const fetchTeacherQuests = async () => {
       try {
-        // Busca todas as quests cadastradas no sistema
-        const data = await getAllQuests();
+        // Busca apenas as quests do autor logado, passando o seu ID.
+        const data = await getQuestsByAuthorId(userData.id);
         setQuests(data);
       } catch (error) {
-        console.error("Falha ao buscar as quests:", error);
+        console.error("Falha ao buscar as quests do professor:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchQuests();
+    fetchTeacherQuests();
   }, [router]);
 
   // --- Lógica de Paginação ---
@@ -66,7 +65,7 @@ export default function TeacherQuestsPage() {
   if (isLoading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
-        <p className="text-white text-xl">Carregando a Forja de Quests...</p>
+        <p className="text-white text-xl">A carregar a Forja de Quests...</p>
       </div>
     );
   }
@@ -74,7 +73,6 @@ export default function TeacherQuestsPage() {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-8 p-5">
-        {/* O título agora é personalizado, resolvendo o aviso de variável não utilizada. */}
         <h1 className="text-4xl [text-shadow:3px_3px_0_var(--color-header-bg)]">
           Forja de Quests de {user?.name}
         </h1>
@@ -91,7 +89,7 @@ export default function TeacherQuestsPage() {
           currentQuests.map((quest) => (
             <QuestItem
               key={quest.id}
-              quest={{ id: quest.id, title: quest.statement }} // Adapta os dados para o componente QuestItem
+              quest={{ id: quest.id, title: quest.statement }}
               action={
                 <ButtonLink
                   href={`/teacher/quests/edit/${quest.id}`}
@@ -105,7 +103,7 @@ export default function TeacherQuestsPage() {
           ))
         ) : (
           <p className="text-center text-white">
-            Nenhuma quest encontrada no sistema.
+            Você ainda não forjou nenhuma quest.
           </p>
         )}
       </div>

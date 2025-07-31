@@ -42,13 +42,13 @@ export default function LandingPage() {
               e aprende na prática, de forma divertida e gamificada.
             </p>
           </div>
-          <div className="h-[400px] pixel-border p-0">
+          <div className="h-[600px] w-[600px] pixel-border pixel-border-filled p-0">
             <Image
               src="/MundoNoesis.png"
               width={600}
-              height={400}
+              height={600}
               alt="Mundo de Noesis"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
         </div>
