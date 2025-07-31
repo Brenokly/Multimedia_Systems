@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.media.noesis.converters.ClanConverter;
 import com.media.noesis.converters.QuestionConverter;
+import com.media.noesis.converters.TopicConverter;
 import com.media.noesis.converters.UnitConverter;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
@@ -27,6 +28,7 @@ public class ClanService {
     private final ClanConverter converter;
 
     private final UnitConverter unitConverter;
+    private final TopicConverter topicConverter;
     private final QuestionConverter questionConverter;
 
     public List<ClanDto> findAll() {
@@ -100,6 +102,16 @@ public class ClanService {
                 .map(clan -> clan.getUnits().stream()
                         .flatMap(unit -> unit.getQuestions().stream())
                         .map(questionConverter::toDto)
+                        .toList())
+                .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
+    }
+
+    public List<String> listTopics(final long id) {
+        return repository.findById(id)
+                .map(clan -> clan.getUnits().stream()
+                        .flatMap(unit -> unit.getQuestions().stream())
+                        .flatMap(question -> question.getTopics().stream())
+                        .map(topicConverter::toDto)
                         .toList())
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
     }

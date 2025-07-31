@@ -145,8 +145,7 @@ public class ClanController {
     @Operation(summary = "Listar unidades", description = "Listar unidades de um clã.")
     public ResponseEntity<List<UnitDto>> listUnits(@PathVariable @NotNull final long id) {
         try {
-            final var questions = service.listUnits(id);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            return new ResponseEntity<>(service.listUnits(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
@@ -156,8 +155,17 @@ public class ClanController {
     @Operation(summary = "Listar questões", description = "Listar questões de um clã.")
     public ResponseEntity<List<QuestionDto>> listQuestions(@PathVariable @NotNull final long id) {
         try {
-            final var questions = service.listQuestions(id);
-            return new ResponseEntity<>(questions, HttpStatus.OK);
+            return new ResponseEntity<>(service.listQuestions(id), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("{id}/topics")
+    @Operation(summary = "Listar questões", description = "Listar questões de um clã.")
+    public ResponseEntity<List<String>> listTopics(@PathVariable @NotNull final long id) {
+        try {
+            return new ResponseEntity<>(service.listTopics(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }

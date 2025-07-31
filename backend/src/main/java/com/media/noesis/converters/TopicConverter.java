@@ -17,11 +17,23 @@ public class TopicConverter extends Converter<Topic, String> {
         this.repository = repository;
     }
 
-    public Topic toEntity(final String name) {
-        return repository.findByName(name)
+    public Topic toEntity(final String source) {
+        return repository.findByName(source)
                 .orElseGet(() -> {
-                    return new Topic().setName(name);
+                    return new Topic().setName(source);
                 });
+    }
+
+    public Topic toEntity(final String source, final Topic destiny) {
+        return destiny.setName(source);
+    }
+
+    public String toDto(final Topic source) {
+        return source.getName();
+    }
+
+    public String toDto(final Topic source, final String ignoredDestiny) {
+        return source.getName();
     }
 
 }
