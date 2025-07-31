@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.media.noesis.converters.ClanConverter;
+import com.media.noesis.converters.QuestionConverter;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
+import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
 import com.media.noesis.exceptions.UnauthorizedException;
@@ -21,6 +23,7 @@ public class ClanService {
 
     private final ClanRepository repository;
     private final ClanConverter converter;
+    private final QuestionConverter questionConverter;
 
     public List<ClanDto> findAll() {
         return repository.findAll().stream()
@@ -77,6 +80,14 @@ public class ClanService {
                             repository.save(entity);
                         },
                         () -> new EntityNotFoundException("Clã não localizado!"));
+    }
+
+    public List<QuestionDto> listQuestions(final long id) {
+        return repository.findById(id)
+                .map(clan -> clan.getQuestions().stream()
+                        .map(questionConverter::toDto)
+                        .toList())
+                .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
     }
 
 }

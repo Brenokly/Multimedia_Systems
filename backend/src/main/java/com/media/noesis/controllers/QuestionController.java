@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.media.noesis.dto.OptionRequest;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
 import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
+import com.media.noesis.services.OptionService;
 import com.media.noesis.services.QuestionService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +38,7 @@ public class QuestionController {
 
     private final QuestionService service;
     private final AuthService authService;
+    private final OptionService optionService;
 
     @GetMapping
     @Operation(summary = "Listar todas", description = "Listar todas as quests cadastradas.")
@@ -92,6 +95,19 @@ public class QuestionController {
         } catch (final Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.EXPECTATION_FAILED, e.getMessage()))
                     .build();
+        }
+    }
+
+    @PostMapping("{id}/options")
+    @Transactional
+    @Operation(summary = "Adicionar alternativas", description = "Adicionar alternativas a uma quest.")
+    public ResponseEntity<QuestionDto> addOptions(@PathVariable @NotNull final long id,
+            @RequestBody @Valid final List<OptionRequest> request) {
+        try {
+            request.forEach(option -> optionService.create(option, id));
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
 

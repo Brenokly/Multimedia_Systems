@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
+import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.ClanService;
@@ -115,6 +116,17 @@ public class ClanController {
             final var integrant = authService.getLoggedUser();
             service.leave(id, integrant);
             return ResponseEntity.noContent().build();
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("{id}/questions")
+    @Operation(summary = "Buscar", description = "Buscar um clã pelo ID.")
+    public ResponseEntity<List<QuestionDto>> listQuestions(@PathVariable @NotNull final long id) {
+        try {
+            final var questions = service.listQuestions(id);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
