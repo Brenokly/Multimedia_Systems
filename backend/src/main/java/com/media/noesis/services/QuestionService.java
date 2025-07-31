@@ -77,4 +77,9 @@ public class QuestionService {
         repository.deleteById(id);
     }
 
+    public List<QuestionDto> findByAuthorId(long authorId) {
+        return repository.findByAuthorId(authorId).stream()
+                .map(converter::toDto)
+                .toList();
+    }
 }

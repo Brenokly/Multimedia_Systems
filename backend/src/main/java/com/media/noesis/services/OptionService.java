@@ -20,11 +20,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class OptionService {
 
-    private OptionRepository repository;
-    private OptionConverter converter;
+    private final OptionRepository repository; 
+    private final OptionConverter converter;
 
-    private QuestionRepository questionRepository;
-    private AuthService authService;
+    private final QuestionRepository questionRepository;
+    private final AuthService authService;
 
     public List<OptionDto> findAll() {
         return repository.findAll().stream()

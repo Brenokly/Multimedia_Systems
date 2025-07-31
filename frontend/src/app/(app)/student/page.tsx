@@ -136,6 +136,7 @@ export default function StudentDashboardPage() {
             color: "var(--color-brand-text)",
             boxShadow: "inset -4px -4px 0px 0px var(--color-yellow-shadow)",
           }}
+          onClick={() => router.push("/student/ranking-global")}
         >
           Ver Ranking
         </button>
