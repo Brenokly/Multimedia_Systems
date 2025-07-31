@@ -12,6 +12,7 @@ public class AnswerDto {
     private long id;
     private long userId;
     private long optionId;
+    private boolean correct;
     private LocalDateTime timestamp;
 
 }

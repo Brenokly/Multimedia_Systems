@@ -1,11 +1,15 @@
 package com.media.noesis.entities;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -33,5 +37,8 @@ public class Option {
 
     @Column
     private String feedback;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "option")
+    private List<Answer> answers;
 
 }
