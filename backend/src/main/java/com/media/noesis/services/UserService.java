@@ -13,6 +13,7 @@ import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
 import com.media.noesis.entities.Clan;
 import com.media.noesis.entities.User;
+import com.media.noesis.repositories.ClanRepository;
 import com.media.noesis.repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -24,9 +25,11 @@ public class UserService {
 
     private final UserRepository repository;
     private final UserConverter converter;
-
+    private final ClanRepository clanRepository;
     private final PasswordEncoder passwordEncoder;
     private final ClanConverter clanConverter;
+
+    private static final String GLOBAL_CLAN_JOIN_CODE = "NOESIS-GLOBAL-CLAN-001";
 
     public List<UserDto> findAll() {
         return repository.findAll().stream()
@@ -41,11 +44,19 @@ public class UserService {
         entity.setEmail(request.getEmail());
         entity.setAvatarId(request.getAvatarId());
         entity.setRole(request.getRole());
+        entity.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        final var hashedPassword = passwordEncoder.encode(request.getPassword());
-        entity.setPassword(hashedPassword);
+        final User savedUser = repository.save(entity);
 
-        repository.save(entity);
+        clanRepository.findByJoinCode(GLOBAL_CLAN_JOIN_CODE).ifPresentOrElse(
+                globalClan -> {
+                    globalClan.getIntegrants().add(savedUser);
+                    clanRepository.save(globalClan);
+                },
+                () -> {
+                    throw new EntityNotFoundException("Clã global com código de adesão " + GLOBAL_CLAN_JOIN_CODE + " não encontrado.");
+                }
+        );
     }
 
     public UserDto findById(final long id) {

@@ -21,12 +21,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UnitService {
 
-    private UnitRepository repository;
-    private UnitConverter converter;
+    private final UnitRepository repository;
+    private final UnitConverter converter;
 
-    private QuestionConverter questionConverter;
-    private ClanRepository clanRepository;
-    private AuthService authService;
+    private final QuestionConverter questionConverter;
+    private final ClanRepository clanRepository;
+    private final AuthService authService;
 
     public List<UnitDto> findAll() {
         return repository.findAll().stream()
@@ -75,8 +75,8 @@ public class UnitService {
     public List<QuestionDto> listQuestions(final long id) {
         return repository.findById(id)
                 .map(clan -> clan.getQuestions().stream()
-                        .map(questionConverter::toDto)
-                        .toList())
+                .map(questionConverter::toDto)
+                .toList())
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
     }
 
