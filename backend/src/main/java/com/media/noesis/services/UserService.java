@@ -13,6 +13,7 @@ import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
 import com.media.noesis.entities.Clan;
 import com.media.noesis.entities.User;
+import com.media.noesis.enums.Role;
 import com.media.noesis.repositories.ClanRepository;
 import com.media.noesis.repositories.UserRepository;
 
@@ -48,15 +49,17 @@ public class UserService {
 
         final User savedUser = repository.save(entity);
 
-        clanRepository.findByJoinCode(GLOBAL_CLAN_JOIN_CODE).ifPresentOrElse(
-                globalClan -> {
-                    globalClan.getIntegrants().add(savedUser);
-                    clanRepository.save(globalClan);
-                },
-                () -> {
-                    throw new EntityNotFoundException("Clã global com código de adesão " + GLOBAL_CLAN_JOIN_CODE + " não encontrado.");
-                }
-        );
+        if (savedUser.getRole() == Role.STUDENT) {
+            clanRepository.findByJoinCode(GLOBAL_CLAN_JOIN_CODE).ifPresentOrElse(
+                    globalClan -> {
+                        globalClan.getIntegrants().add(savedUser);
+                        clanRepository.save(globalClan);
+                    },
+                    () -> {
+                        throw new IllegalStateException("Clã Global com código '" + GLOBAL_CLAN_JOIN_CODE + "' não encontrado. O novo usuário não foi adicionado.");
+                    }
+            );
+        }
     }
 
     public UserDto findById(final long id) {
