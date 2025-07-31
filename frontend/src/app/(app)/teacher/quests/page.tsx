@@ -8,41 +8,9 @@ import QuestItem from "@/components/ui/QuestItem";
 import { getUserData } from "@/services/api/tokenManager";
 // import { getTeacherQuests } from "@/services/quests.service"; // Será necessário criar este serviço
 import { UserData } from "@/types/authTypes";
-import { Quest } from "@/types/quest.types";
+// import { Question } from "@/types/questTypes";
 
 // Mock de dados temporário, com os IDs corrigidos para string para alinhar com o tipo Quest.
-const allQuestsMock: Quest[] = [
-  {
-    id: "1",
-    title: "Quest: Fila de Prioridades",
-    subject: "Estrutura de Dados",
-    difficulty: "Médio",
-  },
-  {
-    id: "2",
-    title: "Quest: Complexidade Big O",
-    subject: "Algoritmos",
-    difficulty: "Fácil",
-  },
-  {
-    id: "3",
-    title: "Quest: Estruturas de Dados",
-    subject: "Estrutura de Dados",
-    difficulty: "Difícil",
-  },
-  {
-    id: "4",
-    title: "Quest: Algoritmos de Busca",
-    subject: "Algoritmos",
-    difficulty: "Fácil",
-  },
-  {
-    id: "5",
-    title: "Quest: Algoritmos de Ordenação",
-    subject: "Algoritmos",
-    difficulty: "Médio",
-  },
-];
 
 /**
  * TeacherQuestsPage exibe a lista de quests criadas pelo professor.
@@ -52,7 +20,7 @@ const allQuestsMock: Quest[] = [
 export default function TeacherQuestsPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserData | null>(null);
-  const [quests, setQuests] = useState<Quest[]>([]);
+  const [quests, setQuests] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +41,7 @@ export default function TeacherQuestsPage() {
       setIsLoading(true);
       // TODO: Substituir o mock pela chamada de serviço real:
       // const data = await getTeacherQuests(userData.id);
-      setQuests(allQuestsMock);
+      //setQuests(allQuestsMock);
       setIsLoading(false);
     };
 

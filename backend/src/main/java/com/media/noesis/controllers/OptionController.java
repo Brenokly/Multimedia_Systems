@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class OptionController {
 
-    private OptionService service;
+    private final OptionService service;
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma alternativa pelo ID.")

@@ -9,7 +9,7 @@ import QuestItem from "@/components/ui/QuestItem";
 import { getUserData } from "@/services/api/tokenManager";
 import { getGlobalQuests } from "@/services/quests.service";
 import { UserData } from "@/types/authTypes";
-import { Quest } from "@/types/quest.types";
+import { Question } from "@/types/questTypes";
 
 // --- Dados para os Filtros ---
 const difficulties = [
@@ -38,7 +38,7 @@ export default function StudentDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // States for quest data and filtering
-  const [allFilteredQuests, setAllFilteredQuests] = useState<Quest[]>([]);
+  const [allFilteredQuests, setAllFilteredQuests] = useState<Question[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState(difficulties[0]);
   const [selectedSubject, setSelectedSubject] = useState(subjects[0]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,7 +145,7 @@ export default function StudentDashboardPage() {
           currentQuests.map((quest) => (
             <QuestItem
               key={quest.id}
-              quest={quest}
+              Question={quest}
               action={
                 <ButtonLink
                   href={`/quests/${quest.id}`}
