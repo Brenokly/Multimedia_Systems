@@ -15,8 +15,7 @@ const QuestItem = ({ quest, action }: QuestItemProps) => (
     className="p-2 flex justify-between items-center rounded"
     style={{ backgroundColor: "#1C1C29" }}
   >
-    <p className="text-white">{quest.title}</p>
-
+    <p className="text-white truncate flex-1 min-w-0 mr-4">{quest.title}</p>
     {action}
   </div>
 );

@@ -74,7 +74,7 @@ export default function LoginPage() {
         }}
       />
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md p-8 pixel-border">
+        <div className="w-full max-w-md p-8 pixel-border pixel-border-filled">
           <h1 className="text-2xl text-center mb-6">Login do Herói</h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input

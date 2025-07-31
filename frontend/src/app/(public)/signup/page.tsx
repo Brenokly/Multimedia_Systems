@@ -75,7 +75,7 @@ export default function SignUpPage() {
         }}
       />
       <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-background-primary">
-        <div className="w-full max-w-lg p-8 pixel-border bg-paper-primary">
+        <div className="w-full max-w-lg p-8 pixel-border pixel-border-filled bg-paper-primary">
           <h1 className="text-2xl text-center mb-6 text-text-primary">
             Criação de Personagem
           </h1>
