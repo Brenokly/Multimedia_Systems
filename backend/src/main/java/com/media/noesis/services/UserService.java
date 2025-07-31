@@ -91,6 +91,18 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public List<UserDto> listStudents() {
+        return repository.findByRole(Role.STUDENT).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
+    public List<UserDto> listTeachers() {
+        return repository.findByRole(Role.TEACHER).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
     public List<ClanDto> getManagedClans(final User owner) {
         return owner.getManagedClans().stream()
                 .map(clanConverter::toDto)
