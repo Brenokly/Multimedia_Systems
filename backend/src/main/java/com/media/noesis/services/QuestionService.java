@@ -12,8 +12,8 @@ import com.media.noesis.dto.QuestionRequest;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
 import com.media.noesis.exceptions.UnauthorizedException;
-import com.media.noesis.repositories.ClanRepository;
 import com.media.noesis.repositories.QuestionRepository;
+import com.media.noesis.repositories.UnitRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -24,9 +24,9 @@ public class QuestionService {
 
     private final QuestionRepository repository;
     private final QuestionConverter converter;
-    private final TopicConverter topicConverter;
 
-    private final ClanRepository clanRepository;
+    private final TopicConverter topicConverter;
+    private final UnitRepository unitRepository;
 
     public List<QuestionDto> findAll() {
         return repository.findAll().stream()
@@ -34,18 +34,18 @@ public class QuestionService {
                 .toList();
     }
 
-    public void create(final QuestionRequest.Create request, final User author, final long clanId) {
-        final var clan = clanRepository.findById(clanId)
+    public void create(final QuestionRequest.Create request, final User author, final long unitId) {
+        final var unit = unitRepository.findById(unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
 
         if (!Role.TEACHER.equals(author.getRole())) {
             throw new UnauthorizedException("Apenas mestres podem criar quests.");
-        } else if (!author.equals(clan.getOwner())) {
+        } else if (!author.equals(unit.getClan().getOwner())) {
             throw new UnauthorizedException("Mestres podem criar quests apenas para os seus próprios clãs.");
         } else {
             final var entity = converter.toEntity(request)
                     .setAuthor(author)
-                    .setClan(clan);
+                    .setUnit(unit);
             entity.getOptions().forEach(option -> option.setQuestion(entity));
 
             repository.save(entity);

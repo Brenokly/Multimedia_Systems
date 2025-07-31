@@ -29,7 +29,7 @@ public class Clan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     private User owner;
 
     @Column(nullable = false)
@@ -38,12 +38,12 @@ public class Clan {
     @Column(nullable = false, unique = true)
     private String joinCode;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "clans_integrations", joinColumns = @JoinColumn(name = "clan"), inverseJoinColumns = @JoinColumn(name = "integrant"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "clan", "integrant" }))
     private List<User> integrants;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clan")
-    private List<Question> questions;
+    private List<Unit> units;
 
 }

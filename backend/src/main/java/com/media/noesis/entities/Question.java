@@ -33,11 +33,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     private User author;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    private Clan clan;
+    @ManyToOne(optional = false)
+    private Unit unit;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -49,7 +49,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<Option> options;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(name = "questions_topics", joinColumns = @JoinColumn(name = "question"), inverseJoinColumns = @JoinColumn(name = "topic"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "question", "topic" }))
     private List<Topic> topics;

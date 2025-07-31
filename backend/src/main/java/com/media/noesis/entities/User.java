@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "clans_integrations", joinColumns = @JoinColumn(name = "integrant"), inverseJoinColumns = @JoinColumn(name = "clan"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "clan", "integrant" }))
     private List<Clan> joinedClans;
@@ -63,6 +63,9 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Question> authoredQuestions;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Answer> answers;
 
     /*
      * Métodos da interface UserDetails

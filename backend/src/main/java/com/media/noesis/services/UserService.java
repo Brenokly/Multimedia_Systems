@@ -24,8 +24,8 @@ public class UserService {
 
     private final UserRepository repository;
     private final UserConverter converter;
-    private final PasswordEncoder passwordEncoder;
 
+    private final PasswordEncoder passwordEncoder;
     private final ClanConverter clanConverter;
 
     public List<UserDto> findAll() {

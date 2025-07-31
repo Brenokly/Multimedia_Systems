@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
 import com.media.noesis.dto.QuestionDto;
+import com.media.noesis.dto.UnitDto;
+import com.media.noesis.dto.UnitRequest;
 import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.ClanService;
+import com.media.noesis.services.UnitService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +39,9 @@ import lombok.AllArgsConstructor;
 public class ClanController {
 
     private final ClanService service;
+
     private final AuthService authService;
+    private final UnitService unitService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todos os clãs cadastrados.")
@@ -116,6 +121,32 @@ public class ClanController {
             final var integrant = authService.getLoggedUser();
             service.leave(id, integrant);
             return ResponseEntity.noContent().build();
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @PostMapping("{id}/units")
+    @Transactional
+    @Operation(summary = "Cadastrar unidade", description = "Cadastrar uma nova unidade.")
+    public ResponseEntity<UnitDto> createUnit(@PathVariable @NotNull final long id,
+            @RequestBody @Valid final UnitRequest request) {
+        try {
+            unitService.create(request, id);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        } catch (final UnauthorizedException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("{id}/units")
+    @Operation(summary = "Listar unidades", description = "Listar unidades de um clã.")
+    public ResponseEntity<List<UnitDto>> listUnits(@PathVariable @NotNull final long id) {
+        try {
+            final var questions = service.listUnits(id);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }

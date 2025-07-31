@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.media.noesis.converters.ClanConverter;
 import com.media.noesis.converters.QuestionConverter;
+import com.media.noesis.converters.UnitConverter;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.ClanRequest;
 import com.media.noesis.dto.QuestionDto;
+import com.media.noesis.dto.UnitDto;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
 import com.media.noesis.exceptions.UnauthorizedException;
@@ -23,6 +25,8 @@ public class ClanService {
 
     private final ClanRepository repository;
     private final ClanConverter converter;
+
+    private final UnitConverter unitConverter;
     private final QuestionConverter questionConverter;
 
     public List<ClanDto> findAll() {
@@ -82,9 +86,19 @@ public class ClanService {
                         () -> new EntityNotFoundException("Clã não localizado!"));
     }
 
+    public List<UnitDto> listUnits(final long id) {
+        return repository.findById(id)
+                .map(clan -> clan.getUnits().stream()
+                        .map(unitConverter::toDto)
+                        .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                        .toList())
+                .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
+    }
+
     public List<QuestionDto> listQuestions(final long id) {
         return repository.findById(id)
-                .map(clan -> clan.getQuestions().stream()
+                .map(clan -> clan.getUnits().stream()
+                        .flatMap(unit -> unit.getQuestions().stream())
                         .map(questionConverter::toDto)
                         .toList())
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));

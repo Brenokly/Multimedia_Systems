@@ -14,15 +14,16 @@ import com.media.noesis.repositories.OptionRepository;
 import com.media.noesis.repositories.QuestionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class OptionService {
 
     private OptionRepository repository;
     private OptionConverter converter;
 
     private QuestionRepository questionRepository;
-
     private AuthService authService;
 
     public List<OptionDto> findAll() {
