@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @GetMapping("managed-clans")
-    @Operation(summary = "Listar clãs gerenciados", description = "Listar clãs gerenciados pelo usuário logado.")
+    @Operation(summary = "Listar meus clãs gerenciados", description = "Listar clãs gerenciados pelo usuário logado.")
     public ResponseEntity<List<ClanDto>> getManagedClans() {
         try {
             final var owner = authService.getLoggedUser();
@@ -91,13 +91,30 @@ public class UserController {
     }
 
     @GetMapping("joined-clans")
-    @Operation(summary = "Listar clãs", description = "Listar clãs do usuário logado.")
+    @Operation(summary = "Listar meus clãs", description = "Listar clãs do usuário logado.")
     public ResponseEntity<List<ClanDto>> getJoinedClans() {
         try {
             final var owner = authService.getLoggedUser();
             final var clans = service.getJoinedClans(owner);
 
             return ResponseEntity.ok(clans);
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("score")
+    @Operation(summary = "Obter minha pontuação", description = "Obter pontuação de usuário.")
+    public ResponseEntity<Long> getMyScore() {
+        final var user = authService.getLoggedUser();
+        return getScore(user.getId());
+    }
+
+    @GetMapping("{id}/score")
+    @Operation(summary = "Obter pontuação", description = "Obter pontuação de usuário.")
+    public ResponseEntity<Long> getScore(@PathVariable @NotNull final long id) {
+        try {
+            return ResponseEntity.ok(service.getScore(id));
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }

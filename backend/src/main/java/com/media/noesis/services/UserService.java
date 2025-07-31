@@ -56,9 +56,9 @@ public class UserService {
                         clanRepository.save(globalClan);
                     },
                     () -> {
-                        throw new IllegalStateException("Clã Global com código '" + GLOBAL_CLAN_JOIN_CODE + "' não encontrado. O novo usuário não foi adicionado.");
-                    }
-            );
+                        throw new IllegalStateException("Clã Global com código '" + GLOBAL_CLAN_JOIN_CODE
+                                + "' não encontrado. O novo usuário não foi adicionado.");
+                    });
         }
     }
 
@@ -72,7 +72,7 @@ public class UserService {
     public void update(final long id, final UserRequest request) {
         final User entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                "Usuário com id " + id + " não encontrado para atualização."));
+                        "Usuário com id " + id + " não encontrado para atualização."));
 
         entity.setName(request.getName());
         entity.setEmail(request.getEmail());
@@ -102,6 +102,14 @@ public class UserService {
         return joinedClans.stream()
                 .map(clanConverter::toDto)
                 .toList();
+    }
+
+    public long getScore(final long id) {
+        return repository.findById(id)
+                .map(user -> user.getAnswers().stream()
+                        .filter(answer -> answer.getOption().isCorrect())
+                        .count())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
     }
 
 }

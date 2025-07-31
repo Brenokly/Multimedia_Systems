@@ -81,7 +81,7 @@ public class UnitController {
     @PostMapping("{id}/questions")
     @Transactional
     @Operation(summary = "Cadastrar quest", description = "Cadastrar uma nova quest.")
-    public ResponseEntity<QuestionDto> create(@PathVariable @NotNull final long id,
+    public ResponseEntity<QuestionDto> createQuestion(@PathVariable @NotNull final long id,
             @RequestBody @Valid final QuestionRequest.Create request) {
         try {
             final var owner = authService.getLoggedUser();

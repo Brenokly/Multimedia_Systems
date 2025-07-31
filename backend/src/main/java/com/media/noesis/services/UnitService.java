@@ -34,7 +34,7 @@ public class UnitService {
                 .toList();
     }
 
-    public void create(final UnitRequest request, final long clanId) {
+    public void create(final UnitRequest request, final long clanId) throws UnauthorizedException {
         final var user = authService.getLoggedUser();
 
         final var clan = clanRepository.findById(clanId)

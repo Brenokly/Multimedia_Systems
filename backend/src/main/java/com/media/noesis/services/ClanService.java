@@ -37,7 +37,7 @@ public class ClanService {
                 .toList();
     }
 
-    public void create(final ClanRequest request, final User owner) {
+    public void create(final ClanRequest request, final User owner) throws UnauthorizedException {
         if (Role.TEACHER.equals(owner.getRole())) {
             final var entity = converter.toEntity(request)
                     .setOwner(owner);

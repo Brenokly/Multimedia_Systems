@@ -3,10 +3,11 @@ package com.media.noesis.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.media.noesis.converters.AnswerConverter;
 import com.media.noesis.converters.QuestionConverter;
 import com.media.noesis.converters.TopicConverter;
+import com.media.noesis.dto.AnswerDto;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
 import com.media.noesis.entities.User;
@@ -26,6 +27,7 @@ public class QuestionService {
     private final QuestionConverter converter;
 
     private final TopicConverter topicConverter;
+    private final AnswerConverter answerConverter;
     private final UnitRepository unitRepository;
 
     public List<QuestionDto> findAll() {
@@ -34,7 +36,8 @@ public class QuestionService {
                 .toList();
     }
 
-    public void create(final QuestionRequest.Create request, final User author, final long unitId) {
+    public void create(final QuestionRequest.Create request, final User author, final long unitId)
+            throws UnauthorizedException {
         final var unit = unitRepository.findById(unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
 
@@ -58,7 +61,6 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
-    @Transactional
     public void update(final long id, final QuestionRequest request) {
         repository.findById(id)
                 .ifPresentOrElse(
@@ -75,6 +77,17 @@ public class QuestionService {
 
     public void delete(final long id) {
         repository.deleteById(id);
+    }
+
+    public List<AnswerDto> listAnswers(final long id) {
+        return repository.findById(id)
+                .map(question -> {
+                    return question.getOptions().stream()
+                            .flatMap(option -> option.getAnswers().stream()
+                                    .map(answerConverter::toDto))
+                            .toList();
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
 }
