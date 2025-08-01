@@ -18,6 +18,7 @@ import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
 import com.media.noesis.exceptions.UnauthorizedException;
+import com.media.noesis.dto.UserWithScoreDto;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.UserService;
 
@@ -91,6 +92,32 @@ public class UserController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @GetMapping("students")
+    @Operation(summary = "Listar alunos", description = "Listar todos os alunos.")
+    public ResponseEntity<List<UserDto>> listStudents() {
+        return new ResponseEntity<>(service.listStudents(), HttpStatus.OK);
+    }
+
+    @GetMapping("teachers")
+    @Operation(summary = "Listar professores", description = "Listar todos os professores.")
+    public ResponseEntity<List<UserDto>> listTeachers() {
+        return new ResponseEntity<>(service.listTeachers(), HttpStatus.OK);
+    }
+
+    @GetMapping("ranking")
+    @Operation(summary = "Ranking", description = "Exibir usuários em ranking de pontuação.")
+    public ResponseEntity<List<UserWithScoreDto>> getRanking() {
+        return new ResponseEntity<>(
+                service.listStudents().stream()
+                        .map(dto -> {
+                            final var score = service.getScore(dto.getId());
+                            return new UserWithScoreDto(dto).setScore(score);
+                        })
+                        .sorted((a, b) -> Long.compare(b.getScore(), a.getScore()))
+                        .toList(),
+                HttpStatus.OK);
     }
 
     @GetMapping("managed-clans")

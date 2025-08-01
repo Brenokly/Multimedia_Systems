@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.media.noesis.converters.AnswerConverter;
+import com.media.noesis.converters.OptionConverter;
 import com.media.noesis.converters.QuestionConverter;
 import com.media.noesis.converters.TopicConverter;
+import com.media.noesis.converters.UserConverter;
 import com.media.noesis.dto.AnswerDto;
+import com.media.noesis.dto.AnswerWithDetailsDto;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
 import com.media.noesis.entities.User;
@@ -26,7 +29,9 @@ public class QuestionService {
     private final QuestionRepository repository;
     private final QuestionConverter converter;
 
+    private final UserConverter userConverter;
     private final TopicConverter topicConverter;
+    private final OptionConverter optionConverter;
     private final AnswerConverter answerConverter;
     private final UnitRepository unitRepository;
 
@@ -79,7 +84,6 @@ public class QuestionService {
         repository.deleteById(id);
     }
 
-
     public List<QuestionDto> findByAuthorId(long authorId) {
         return repository.findByAuthorId(authorId).stream()
                 .map(converter::toDto)
@@ -97,5 +101,19 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
+    public List<AnswerWithDetailsDto> listAnswersWithDeitais(final long id) {
+        return repository.findById(id)
+                .map(question -> {
+                    return question.getOptions().stream()
+                            .flatMap(option -> option.getAnswers().stream()
+                                    .map(answer -> new AnswerWithDetailsDto()
+                                            .setId(answer.getId())
+                                            .setOption(optionConverter.toDto(answer.getOption()))
+                                            .setUser(userConverter.toDto(answer.getUser()))
+                                            .setTimestamp(answer.getTimestamp())))
+                            .toList();
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
+    }
 
 }

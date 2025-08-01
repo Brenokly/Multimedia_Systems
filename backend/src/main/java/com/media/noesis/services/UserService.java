@@ -98,6 +98,26 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public long getScore(final long id) {
+        return repository.findById(id)
+                .map(user -> user.getAnswers().stream()
+                        .filter(answer -> answer.getOption().isCorrect())
+                        .count())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
+    }
+
+    public List<UserDto> listStudents() {
+        return repository.findByRole(Role.STUDENT).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
+    public List<UserDto> listTeachers() {
+        return repository.findByRole(Role.TEACHER).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
     public List<ClanDto> getManagedClans(final User owner) {
         return owner.getManagedClans().stream()
                 .map(clanConverter::toDto)
@@ -110,13 +130,4 @@ public class UserService {
                 .map(clanConverter::toDto)
                 .toList();
     }
-
-    public long getScore(final long id) {
-        return repository.findById(id)
-                .map(user -> user.getAnswers().stream()
-                .filter(answer -> answer.getOption().isCorrect())
-                .count())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
-    }
-
 }
