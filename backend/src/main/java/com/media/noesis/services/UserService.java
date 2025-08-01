@@ -14,6 +14,7 @@ import com.media.noesis.dto.UserRequest;
 import com.media.noesis.entities.Clan;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
+import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.repositories.ClanRepository;
 import com.media.noesis.repositories.UserRepository;
 
@@ -39,7 +40,7 @@ public class UserService {
     }
 
     @Transactional
-    public void create(final UserRequest request) {
+    public void create(final UserRequest.Create request) {
         final User entity = new User();
         entity.setName(request.getName());
         entity.setEmail(request.getEmail());
@@ -69,20 +70,26 @@ public class UserService {
     }
 
     @Transactional
-    public void update(final long id, final UserRequest request) {
+    public void updateProfile(final long id, final UserRequest.UpdateProfile request) {
         final User entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Usuário com id " + id + " não encontrado para atualização."));
+                .orElseThrow(() -> new EntityNotFoundException("Utilizador com id " + id + " não encontrado."));
 
         entity.setName(request.getName());
-        entity.setEmail(request.getEmail());
         entity.setAvatarId(request.getAvatarId());
-        entity.setRole(request.getRole());
 
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            entity.setPassword(passwordEncoder.encode(request.getPassword()));
+        repository.save(entity);
+    }
+
+    @Transactional
+    public void updatePassword(final long id, final UserRequest.UpdatePassword request) throws UnauthorizedException {
+        final User entity = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilizador com id " + id + " não encontrado."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), entity.getPassword())) {
+            throw new UnauthorizedException("A palavra-passe atual está incorreta.");
         }
 
+        entity.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(entity);
     }
 
@@ -123,5 +130,4 @@ public class UserService {
                 .map(clanConverter::toDto)
                 .toList();
     }
-
 }

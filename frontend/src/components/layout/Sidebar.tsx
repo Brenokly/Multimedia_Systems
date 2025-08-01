@@ -42,7 +42,7 @@ export function Sidebar({ user }: { user: UserData }) {
               </Link>
             </li>
             <li>
-              <Link href="/student/hero-sheet" className={btnPixel}>
+              <Link href="/hero-sheet" className={btnPixel}>
                 Ficha do Herói
               </Link>
             </li>
@@ -75,7 +75,7 @@ export function Sidebar({ user }: { user: UserData }) {
               </Link>
             </li>
             <li>
-              <Link href="/teacher/hero-sheet" className={btnPixel}>
+              <Link href="/hero-sheet" className={btnPixel}>
                 Ficha do Herói
               </Link>
             </li>
