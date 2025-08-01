@@ -15,4 +15,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findByLevel(Level level);
 
     Optional<Question> findByStatement(String statement);
+
+    Optional<Question> findByAuthorId(long authorId);
+
 }

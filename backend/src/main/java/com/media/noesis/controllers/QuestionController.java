@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.media.noesis.dto.AnswerWithDetailsDto;
 import com.media.noesis.dto.OptionRequest;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
@@ -79,7 +80,7 @@ public class QuestionController {
         }
     }
 
-    @PostMapping("{id}/options")
+    @PostMapping("")
     @Transactional
     @Operation(summary = "Adicionar alternativas", description = "Adicionar alternativas a uma quest.")
     public ResponseEntity<QuestionDto> addOptions(@PathVariable @NotNull final long id,
@@ -87,7 +88,17 @@ public class QuestionController {
         try {
             request.forEach(option -> optionService.create(option, id));
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (EntityNotFoundException e) {
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
+    @GetMapping("{id}/answers")
+    @Operation(summary = "Listar respostas dos alunos", description = "Listar todas as quests cadastradas.")
+    public ResponseEntity<List<AnswerWithDetailsDto>> listAnswers(@PathVariable @NotNull final long id) {
+        try {
+            return new ResponseEntity<>(service.listAnswersWithDeitais(id), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
