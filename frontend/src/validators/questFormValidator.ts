@@ -25,3 +25,21 @@ export const questSchema = z.object({
 });
 
 export type QuestFormInputs = z.infer<typeof questSchema>;
+
+export const questEditSchema = z.object({
+  statement: z
+    .string()
+    .min(10, { message: "O enunciado deve ter no mínimo 10 caracteres." }),
+  level: z.enum(["EASY", "MEDIUM", "HARD"], { required_error: "Selecione um nível de dificuldade." }),
+  topics: z
+    .array(z.string())
+    .nonempty({ message: "Selecione ao menos um tópico." }),
+  options: z
+    .array(optionSchema)
+    .length(3, { message: "A quest deve ter exatamente 3 opções." }),
+  correctOptionIndex: z.coerce
+    .number({ invalid_type_error: "Você deve selecionar uma opção correta." })
+    .min(0, "Você deve selecionar uma opção correta."),
+});
+
+export type QuestEditFormInputs = z.infer<typeof questEditSchema>;

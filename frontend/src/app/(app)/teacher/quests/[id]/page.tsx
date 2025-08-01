@@ -12,7 +12,7 @@ import {Input} from "@/components/ui/Input";
 import {PixelCombobox} from "@/components/ui/PixelCombobox";
 import {getQuestById, updateQuest} from "@/services/questService";
 import {difficultyLevels, QuestionRequest, subjects} from "@/types/questTypes";
-import {QuestFormInputs, questSchema} from "@/validators/questFormValidator";
+import {QuestEditFormInputs, questEditSchema} from "@/validators/questFormValidator";
 
 /**
  * Página para Mestres (professores) editarem suas Quests.
@@ -32,8 +32,8 @@ export default function EditQuestPage() {
     control,
     reset,
     formState: {errors},
-  } = useForm<QuestFormInputs>({
-    resolver: zodResolver(questSchema),
+  } = useForm<QuestEditFormInputs>({
+    resolver: zodResolver(questEditSchema),
     defaultValues: {
       options: [
         {assertion: "", feedback: ""},
@@ -79,7 +79,7 @@ export default function EditQuestPage() {
     fetchQuestData();
   }, [questId, reset, router]);
 
-  const onSubmit = async (data: QuestFormInputs) => {
+  const onSubmit = async (data: QuestEditFormInputs) => {
     setIsLoading(true);
 
     const payload: QuestionRequest = {
@@ -135,10 +135,9 @@ export default function EditQuestPage() {
           <div>
             <label className="block mb-2 text-lg text-white">Enunciado da Quest</label>
             <textarea {...register("statement")}
-                      className="w-full border-4 bg-[#fffaf0] p-2.5 text-pixelText border-pixelBorder
-                      focus:bg-white focus:outline-none min-h-[120px] placeholder:text-gray-500"
-                      placeholder="Descreva o problema ou a pergunta..."
-                      disabled={isLoading}/>
+                      className="w-full border-4 bg-[#fffaf0] p-2.5 pixel-border-filled
+                      focus:bg-white focus:outline-none min-h-[120px]"
+                      placeholder="Descreva o problema ou a pergunta..." disabled={isLoading}/>
             {errors.statement && <p className="mt-1 text-sm text-red-500">{errors.statement.message}</p>}
           </div>
 
