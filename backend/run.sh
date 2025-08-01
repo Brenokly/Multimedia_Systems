@@ -1,6 +1,6 @@
 
 # Incluindo envs...
-export $(grep -v '^#' .env | xargs)
+#export $(grep -v '^#' .env | xargs)
 
 # Iniciando ou criando container do Postgres...
 docker compose up -d

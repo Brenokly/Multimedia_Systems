@@ -1,6 +1,37 @@
 // --- Enums ---
 export type Level = "EASY" | "MEDIUM" | "HARD";
 
+// --- Níveis de dificuldade ---
+export const difficultyLevels: { id: Level; label: string }[] = [
+  {id: "EASY", label: "Fácil"},
+  {id: "MEDIUM", label: "Médio"},
+  {id: "HARD", label: "Difícil"},
+];
+
+// --- Tópicos das quests ---
+export const subjects = [
+  {id: "Análise de Algoritmos", label: "Análise de Algoritmos"},
+  {id: "Arquitetura de Computadores", label: "Arquitetura de Computadores"},
+  {id: "Banco de Dados", label: "Banco de Dados"},
+  {id: "Computação Gráfica", label: "Computação Gráfica"},
+  {id: "Computação Quântica", label: "Computação Quântica"},
+  {id: "Desenvolvimento Móvel", label: "Desenvolvimento Móvel"},
+  {id: "Desenvolvimento Web", label: "Desenvolvimento Web"},
+  {id: "Engenharia de Software", label: "Engenharia de Software"},
+  {id: "Estruturas de Dados I", label: "Estruturas de Dados I"},
+  {id: "Estruturas de Dados II", label: "Estruturas de Dados II"},
+  {id: "Inteligência Artificial", label: "Inteligência Artificial"},
+  {id: "Metodologias Ágeis", label: "Metodologias Ágeis"},
+  {id: "Programação de Computadores", label: "Programação de Computadores"},
+  {id: "Programação de Jogos", label: "Programação de Jogos"},
+  {id: "Redes de Computadores", label: "Redes de Computadores"},
+  {id: "Segurança", label: "Segurança"},
+  {id: "Sistemas Operacionais", label: "Sistemas Operacionais"},
+  {id: "Sistemas Multimídia", label: "Sistemas Multimídia"},
+  {id: "Teste de Software", label: "Teste de Software"},
+  {id: "Outro", label: "Outro"}
+];
+
 // --- DTOs de Resposta (o que a API envia) ---
 
 /**

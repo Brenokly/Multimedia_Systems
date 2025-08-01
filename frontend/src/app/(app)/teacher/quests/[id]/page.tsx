@@ -1,7 +1,7 @@
 "use client";
 
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useRouter} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Controller, useFieldArray, useForm} from "react-hook-form";
 import toast, {Toaster} from "react-hot-toast";
@@ -10,95 +10,113 @@ import {AxiosError} from "axios";
 import Button from "@/components/ui/Button";
 import {Input} from "@/components/ui/Input";
 import {PixelCombobox} from "@/components/ui/PixelCombobox";
-import {createQuestInUnit} from "@/services/unitService";
-import {getAllClans, listUnitsByClan} from "@/services/clanService";
-import {getUserData} from "@/services/api/tokenManager";
+import {getQuestById, updateQuest} from "@/services/questService";
 import {difficultyLevels, QuestionRequest, subjects} from "@/types/questTypes";
-import {UnitDto} from "@/types/clanTypes";
 import {QuestFormInputs, questSchema} from "@/validators/questFormValidator";
 
-export default function NewQuestPage() {
+/**
+ * Página para Mestres (professores) editarem suas Quests.
+ */
+export default function EditQuestPage() {
   const router = useRouter();
+  const params = useParams();
+  const questId = params.id as string;
+
   const [isLoading, setIsLoading] = useState(false);
-  const [teacherUnits, setTeacherUnits] = useState<UnitDto[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
   const placeholderItem = {id: "", label: "Selecione..."};
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: {errors},
   } = useForm<QuestFormInputs>({
     resolver: zodResolver(questSchema),
     defaultValues: {
-      unitId: undefined,
-      options: [{assertion: "", feedback: ""}, {assertion: "", feedback: ""}, {assertion: "", feedback: ""}],
+      options: [
+        {assertion: "", feedback: ""},
+        {assertion: "", feedback: ""},
+        {assertion: "", feedback: ""},
+      ],
       topics: [],
     },
   });
 
-  const {fields} = useFieldArray({control, name: "options"});
+  const {fields} = useFieldArray({
+    control,
+    name: "options",
+  });
 
   useEffect(() => {
-    const fetchTeacherUnits = async () => {
-      const userData = getUserData();
-      if (!userData) {
-        toast.error("Usuário não encontrado. Faça login novamente.");
-        return;
-      }
+    if (!questId) return;
 
+    const fetchQuestData = async () => {
       try {
-        const allClans = await getAllClans();
-        const myClans = allClans.filter(clan => clan.owner.id === userData.id);
+        const questData = await getQuestById(Number(questId));
+        const correctIndex = questData.options.findIndex(opt => opt.correct);
 
-        if (myClans.length === 0) {
-          toast.error("Você não possui clãs com unidades para adicionar quests.");
-          return;
-        }
-
-        const unitsPromises = myClans.map(clan => listUnitsByClan(clan.id));
-        const unitsArrays = await Promise.all(unitsPromises);
-        setTeacherUnits(unitsArrays.flat());
-
+        reset({
+          statement: questData.statement,
+          level: questData.level,
+          topics: questData.topics,
+          options: questData.options.map(opt => ({
+            assertion: opt.assertion,
+            feedback: opt.feedback || "",
+          })),
+          correctOptionIndex: correctIndex !== -1 ? correctIndex : undefined,
+        });
       } catch (error) {
-        toast.error("Não foi possível carregar as unidades dos seus clãs.");
-        console.error("Erro ao buscar unidades:", error);
+        console.error("Falha ao carregar dados da quest:", error);
+        toast.error("Falha ao carregar os dados da quest.");
+        router.push("/teacher/quests");
+      } finally {
+        setIsFetching(false);
       }
     };
 
-    fetchTeacherUnits();
-  }, []);
+    fetchQuestData();
+  }, [questId, reset, router]);
 
   const onSubmit = async (data: QuestFormInputs) => {
     setIsLoading(true);
-    const {unitId, ...questData} = data;
+
     const payload: QuestionRequest = {
-      statement: questData.statement,
-      level: questData.level,
-      topics: questData.topics,
-      options: questData.options.map((opt, index) => ({
+      statement: data.statement,
+      level: data.level,
+      topics: data.topics,
+      options: data.options.map((opt, index) => ({
         assertion: opt.assertion,
         feedback: opt.feedback,
-        correct: index === questData.correctOptionIndex,
+        correct: index === data.correctOptionIndex,
       })),
     };
 
     try {
-      await createQuestInUnit(unitId, payload);
-      toast.success("Quest forjada com sucesso!");
+      await updateQuest(Number(questId), payload);
+      toast.success("Quest atualizada com sucesso!");
       setTimeout(() => {
         router.push("/teacher/quests");
       }, 1500);
     } catch (error) {
-      let errorMessage = "Erro ao forjar a quest.";
+      let errorMessage = "Erro ao atualizar a quest.";
       if (error instanceof AxiosError) {
         errorMessage = error.response?.data?.detail || errorMessage;
       }
-      console.error("Erro ao criar quest:", error);
+      console.error("Erro ao atualizar quest:", error);
       toast.error(errorMessage);
       setIsLoading(false);
     }
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <p className="text-white text-xl">Carregando Forja...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -110,33 +128,17 @@ export default function NewQuestPage() {
       }}/>
       <div className="w-full max-w-4xl mx-auto">
         <h1 className="text-4xl text-white text-center mb-8 [text-shadow:3px_3px_0_var(--color-header-bg)]">
-          Forjar Nova Quest
+          Editar Quest
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="p-8 pixel-border space-y-6 rounded"
               style={{backgroundColor: "#252637"}}>
-
-          <Controller name="unitId" control={control} render={({field}) => (
-            <div>
-              <label className="block mb-2 text-lg text-white">Unidade</label>
-              <PixelCombobox items={teacherUnits.map(u => ({id: String(u.id), label: u.name}))}
-                             value={teacherUnits.find(u => u.id === field.value) ? {
-                               id: String(field.value),
-                               label: teacherUnits.find(u => u.id === field.value)!.name
-                             } : placeholderItem} onChange={(item) => field.onChange(Number(item.id))}
-                             className="w-full"/>
-              {errors.unitId && <p className="mt-1 text-sm text-red-500">{errors.unitId.message}</p>}
-            </div>
-          )}/>
-
           <div>
             <label className="block mb-2 text-lg text-white">Enunciado da Quest</label>
-            <textarea
-              {...register("statement")}
-              className="w-full border-4 bg-[#fffaf0] p-2.5 text-[var(--border-shadow)]
-              border-pixelBorder focus:bg-white focus:outline-none min-h-[120px]"
-              placeholder="Descreva o problema ou a pergunta..."
-              disabled={isLoading}
-            />
+            <textarea {...register("statement")}
+                      className="w-full border-4 bg-[#fffaf0] p-2.5 text-pixelText border-pixelBorder
+                      focus:bg-white focus:outline-none min-h-[120px] placeholder:text-gray-500"
+                      placeholder="Descreva o problema ou a pergunta..."
+                      disabled={isLoading}/>
             {errors.statement && <p className="mt-1 text-sm text-red-500">{errors.statement.message}</p>}
           </div>
 
@@ -168,18 +170,23 @@ export default function NewQuestPage() {
               {fields.map((item, index) => (
                 <div key={item.id} className="flex items-start gap-4 p-4 pixel-border-dark">
                   <input type="radio" {...register("correctOptionIndex")} value={index}
-                         className="form-radio h-6 w-6 shrink-0"/>
-                  <div className="flex-grow space-y-2">
-                    <Input label={`Opção ${index + 1}`} type="text"
-                           registration={register(`options.${index}.assertion`)}
-                           error={errors.options?.[index]?.assertion?.message}
-                           placeholder="Texto da alternativa"
-                           className="text-left"
-                           disabled={isLoading}/>
-                    <Input label="Feedback" type="text"
-                           registration={register(`options.${index}.feedback`)}
-                           error={errors.options?.[index]?.feedback?.message}
-                           placeholder="Mensagem de feedback para esta opção" disabled={isLoading}/>
+                         className="form-radio h-6 w-6 mt-9 shrink-0"/>
+                  <div className="flex-grow space-y-2 text-white">
+                    <Input
+                      label={`Opção ${index + 1}`}
+                      type="text"
+                      registration={register(`options.${index}.assertion`)}
+                      error={errors.options?.[index]?.assertion?.message}
+                      placeholder="Texto da alternativa (assertion)"
+                      disabled={isLoading}
+                    />
+                    <Input
+                      label="Feedback"
+                      type="text"
+                      registration={register(`options.${index}.feedback`)}
+                      error={errors.options?.[index]?.feedback?.message}
+                      placeholder="Mensagem de feedback para esta opção" disabled={isLoading}
+                    />
                   </div>
                 </div>
               ))}
@@ -189,9 +196,10 @@ export default function NewQuestPage() {
           </div>
 
           <div className="flex justify-end gap-4 !mt-8 border-t-4 border-pixelBorder pt-6">
-            <Button type="button" variant="danger" onClick={() => router.back()} disabled={isLoading}>Cancelar</Button>
+            <Button type="button" variant="danger" onClick={() => router.push("/teacher/quests")}
+                    disabled={isLoading}>Cancelar</Button>
             <Button type="submit" variant="primary" disabled={isLoading}>
-              {isLoading ? "Forjando..." : "Forjar Quest"}
+              {isLoading ? "Salvando..." : "Salvar Alterações"}
             </Button>
           </div>
         </form>

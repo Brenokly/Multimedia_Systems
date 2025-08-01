@@ -105,7 +105,7 @@ export default function LoginPage() {
             </Button>
             <p className="text-center text-sm mt-6">
               Primeira vez?{" "}
-              <Link href="/signup" className="text-btn-blue hover:underline">
+              <Link href="/signup" className="text-blue-700 hover:underline">
                 Crie um Personagem
               </Link>
             </p>

@@ -45,9 +45,9 @@ public class DataInitializer implements CommandLineRunner {
         Clan globalClan = createGlobalClan(systemAdmin);
         Unit globalUnit = createGlobalUnit(globalClan);
 
-        Topic topicED1 = createTopic("ED1");
-        Topic topicED2 = createTopic("ED2");
-        Topic topicRedes = createTopic("REDES");
+        Topic topicED1 = createTopic("Estruturas de Dados I");
+        Topic topicED2 = createTopic("Estruturas de Dados II");
+        Topic topicRedes = createTopic("Redes de Computadores");
 
         createGlobalQuests(systemAdmin, globalUnit, topicED1, topicED2, topicRedes);
     }

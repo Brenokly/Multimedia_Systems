@@ -49,7 +49,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<Option> options;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "questions_topics", joinColumns = @JoinColumn(name = "question"), inverseJoinColumns = @JoinColumn(name = "topic"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "question", "topic" }))
     private List<Topic> topics;

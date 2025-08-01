@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { Quest } from "@/types/quest.types";
 
 const MOCK_QUESTS: Quest[] = [

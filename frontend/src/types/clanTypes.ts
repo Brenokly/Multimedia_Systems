@@ -22,6 +22,7 @@ export interface ClanDto {
   joinCode: string;
   name: string;
   owner: UserDto;
+  members: UserDto[];
 }
 
 
