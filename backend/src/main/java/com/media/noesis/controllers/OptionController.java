@@ -7,13 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.media.noesis.dto.AnswerDto;
 import com.media.noesis.dto.OptionDto;
 import com.media.noesis.dto.OptionRequest;
+import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.OptionService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +67,19 @@ public class OptionController {
         } catch (final Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.EXPECTATION_FAILED, e.getMessage()))
                     .build();
+        }
+    }
+
+    @PostMapping("{id}/choose")
+    @Transactional
+    @Operation(summary = "Editar", description = "Editar os dados de uma alternativa.")
+    public ResponseEntity<AnswerDto> choose(@PathVariable @NotNull final long id) {
+        try {
+            return new ResponseEntity<>(service.choose(id), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        } catch (final UnauthorizedException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage())).build();
         }
     }
 

@@ -32,13 +32,31 @@ export function Sidebar({ user }: { user: UserData }) {
         {user.role === "STUDENT" && (
           <ul className="space-y-4">
             <li>
-              <Link href="#" className={btnPixel}>
+              <Link href="/student" className={btnPixel}>
                 Quests Globais
               </Link>
             </li>
             <li>
-              <Link href="#" className={btnPixel}>
+              <Link href="/student/clans" className={btnPixel}>
                 Meus Clãs
+              </Link>
+            </li>
+            <li>
+              <Link href="/student/hero-sheet" className={btnPixel}>
+                Ficha do Herói
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/student/plans"
+                className={btnPixel}
+                style={{
+                  backgroundColor: "#fdd835",
+                  color: "#5d4037",
+                  boxShadow: "inset -4px -4px 0px 0px #fbc02d",
+                }}
+              >
+                Planos
               </Link>
             </li>
           </ul>
@@ -47,38 +65,35 @@ export function Sidebar({ user }: { user: UserData }) {
         {user.role === "TEACHER" && (
           <ul className="space-y-4">
             <li>
-              <Link href="#" className={btnPixel}>
+              <Link href="/teacher/quests" className={btnPixel}>
                 Minhas Quests
               </Link>
             </li>
             <li>
-              <Link href="#" className={btnPixel}>
+              <Link href="/teacher/clans" className={btnPixel}>
                 Meus Clãs
+              </Link>
+            </li>
+            <li>
+              <Link href="/teacher/hero-sheet" className={btnPixel}>
+                Ficha do Herói
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/teacher/plans"
+                className={btnPixel}
+                style={{
+                  backgroundColor: "#fdd835",
+                  color: "#5d4037",
+                  boxShadow: "inset -4px -4px 0px 0px #fbc02d",
+                }}
+              >
+                Planos
               </Link>
             </li>
           </ul>
         )}
-
-        <ul className="mt-4 space-y-4">
-          <li>
-            <Link href="#" className={btnPixel}>
-              Ficha do Herói
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className={btnPixel}
-              style={{
-                backgroundColor: "#fdd835",
-                color: "#5d4037",
-                boxShadow: "inset -4px -4px 0px 0px #fbc02d",
-              }}
-            >
-              Planos
-            </Link>
-          </li>
-        </ul>
       </nav>
 
       <div className="mt-auto">

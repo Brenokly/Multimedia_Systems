@@ -3,7 +3,6 @@ package com.media.noesis.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.media.noesis.converters.AnswerConverter;
 import com.media.noesis.converters.OptionConverter;
@@ -42,7 +41,8 @@ public class QuestionService {
                 .toList();
     }
 
-    public void create(final QuestionRequest.Create request, final User author, final long unitId) {
+    public void create(final QuestionRequest.Create request, final User author, final long unitId)
+            throws UnauthorizedException {
         final var unit = unitRepository.findById(unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Clã não localizado."));
 
@@ -66,7 +66,6 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
-    @Transactional
     public void update(final long id, final QuestionRequest request) {
         repository.findById(id)
                 .ifPresentOrElse(

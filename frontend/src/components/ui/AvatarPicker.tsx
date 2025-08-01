@@ -29,7 +29,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
       <label className="block mb-2 text-sm text-text-primary">
         Escolha seu Avatar
       </label>
-      <div className="grid grid-cols-5 gap-3 p-3 pixel-border bg-[#252637]">
+      <div className="grid grid-cols-5 gap-3 p-3 bg-[#252637]">
         {avatars.map((avatar) => (
           <button
             type="button"

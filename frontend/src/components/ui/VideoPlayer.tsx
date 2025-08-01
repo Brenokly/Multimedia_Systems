@@ -8,7 +8,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
   return (
-    <div className="w-full h-full pixel-border p-0">
+    <div className="w-full h-full pixel-border pixel-border-filled p-0">
       <iframe
         className="w-full h-full"
         src={`https://www.youtube.com/embed/${videoId}`}

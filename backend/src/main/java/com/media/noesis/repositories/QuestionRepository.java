@@ -16,6 +16,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Optional<Question> findByStatement(String statement);
 
-    Optional<Question> findByAuthorId(long authorId);
+    List<Question> findByAuthorId(long authorId);
 
 }

@@ -19,6 +19,8 @@ import com.media.noesis.dto.AnswerWithDetailsDto;
 import com.media.noesis.dto.OptionRequest;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
+import com.media.noesis.exceptions.UnauthorizedException;
+import com.media.noesis.exceptions.UnauthorizedException.RuntimeUnauthorizedException;
 import com.media.noesis.services.OptionService;
 import com.media.noesis.services.QuestionService;
 
@@ -86,7 +88,13 @@ public class QuestionController {
     public ResponseEntity<QuestionDto> addOptions(@PathVariable @NotNull final long id,
             @RequestBody @Valid final List<OptionRequest> request) {
         try {
-            request.forEach(option -> optionService.create(option, id));
+            request.forEach(option -> {
+                try {
+                    optionService.create(option, id);
+                } catch (final UnauthorizedException e) {
+                    throw e.asRuntime();
+                }
+            });
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
@@ -100,7 +108,14 @@ public class QuestionController {
             return new ResponseEntity<>(service.listAnswersWithDeitais(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        } catch (final RuntimeUnauthorizedException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage())).build();
         }
     }
 
+    @GetMapping("author/{authorId}")
+    @Operation(summary = "Buscar por autor", description = "Buscar questões por ID do autor.")
+    public ResponseEntity<List<QuestionDto>> getByAuthorId(@PathVariable @NotNull final long authorId) {
+        return new ResponseEntity<>(service.findByAuthorId(authorId), HttpStatus.OK);
+    }
 }
