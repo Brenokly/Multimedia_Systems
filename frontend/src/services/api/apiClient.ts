@@ -20,10 +20,13 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Interceptor de Resposta: Lida com erros de autenticação
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config?.url?.endsWith('/login');
+
+    if (error.response?.status === 401 && !isLoginRequest) {
       clearAuthData();
       if (isBrowser()) {
         window.location.href = '/login';

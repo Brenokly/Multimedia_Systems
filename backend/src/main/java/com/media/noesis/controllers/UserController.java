@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
+import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.UserService;
 
@@ -52,16 +53,31 @@ public class UserController {
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping("{id}/profile")
     @Transactional
-    @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")
-    public ResponseEntity<UserDto> update(@PathVariable @NotNull final long id,
-            @RequestBody @Valid final UserRequest request) {
+    @Operation(summary = "Editar Perfil", description = "Editar o nome e o avatar de um utilizador.")
+    public ResponseEntity<Void> updateProfile(@PathVariable @NotNull final long id,
+            @RequestBody @Valid final UserRequest.UpdateProfile request) {
         try {
-            service.update(id, request);
+            service.updateProfile(id, request);
             return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("{id}/password")
+    @Transactional
+    @Operation(summary = "Editar Palavra-passe", description = "Editar a palavra-passe de um utilizador.")
+    public ResponseEntity<Void> updatePassword(@PathVariable @NotNull final long id,
+            @RequestBody @Valid final UserRequest.UpdatePassword request) {
+        try {
+            service.updatePassword(id, request);
+            return ResponseEntity.noContent().build();
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (final UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class OptionService {
-  
+
     private static final String NOT_FOUND_MESSAGE = "Alternativa não localizada!";
 
     private final OptionRepository repository;
@@ -83,7 +83,6 @@ public class OptionService {
     public AnswerDto choose(final long id) throws UnauthorizedException {
         try {
             return repository.findById(id)
-
                     // Se a alternativa for encontrada...
                     .map(option -> {
                         // Obter usuário logado
@@ -108,7 +107,6 @@ public class OptionService {
                         // Transformar em DTO e retornar
                         return answerConverter.toDto(answer);
                     })
-
                     // Se a alternativa não for encontrada...
                     .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         } catch (RuntimeUnauthorizedException e) {

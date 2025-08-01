@@ -1,5 +1,6 @@
 import apiClient from '@/services/api/apiClient';
-import { UserCreateRequest, UserDto, UserUpdateRequest } from '@/types/userTypes';
+import { UserCreateRequest, UserDto } from '@/types/userTypes';
+import { PasswordFormInputs, ProfileInfoFormInputs } from '@/validators/profileValidators';
 
 const BASE_URL = '/v1/core/users';
 
@@ -35,14 +36,21 @@ export const createUser = async (userData: UserCreateRequest): Promise<void> => 
 };
 
 /**
- * Atualiza os dados de um usuário existente.
- * Mapeia para: PUT /v1/core/users/{id}
- * @param id - O ID do usuário a ser atualizado.
- * @param userData - Os novos dados para o usuário.
- * @returns Uma promessa vazia, pois o backend retorna 204 No Content.
+ * Atualiza os dados de perfil (nome e avatar) de um utilizador.
+ * @param userId - O ID do utilizador a ser atualizado.
+ * @param profileData - Os novos dados de nome e avatarId.
  */
-export const updateUser = async (id: number, userData: UserUpdateRequest): Promise<void> => {
-  await apiClient.put(`${BASE_URL}/${id}`, userData);
+export const updateUserProfile = async (userId: number, profileData: ProfileInfoFormInputs): Promise<void> => {
+  await apiClient.put(`${BASE_URL}/${userId}/profile`, profileData);
+};
+
+/**
+ * Atualiza a palavra-passe de um utilizador.
+ * @param userId - O ID do utilizador a ser atualizado.
+ * @param passwordData - Os dados da nova palavra-passe e da atual.
+ */
+export const updateUserPassword = async (userId: number, passwordData: PasswordFormInputs): Promise<void> => {
+  await apiClient.put(`${BASE_URL}/${userId}/password`, passwordData);
 };
 
 /**
