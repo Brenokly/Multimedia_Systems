@@ -11,6 +11,7 @@ import com.media.noesis.converters.UserConverter;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
+import com.media.noesis.entities.Answer;
 import com.media.noesis.entities.Clan;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
@@ -102,6 +103,16 @@ public class UserService {
         return repository.findById(id)
                 .map(user -> user.getAnswers().stream()
                         .filter(answer -> answer.getOption().isCorrect())
+                        .count())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
+    }
+
+    public long getScore(final long id, final long clanId) {
+        return repository.findById(id)
+                .map(user -> user.getAnswers().stream()
+                        .map(Answer::getOption)
+                        .filter(option -> option.isCorrect()
+                                && option.getQuestion().getUnit().getClan().getId() == clanId)
                         .count())
                 .orElseThrow(() -> new EntityNotFoundException("Usuário com id " + id + " não encontrado."));
     }
