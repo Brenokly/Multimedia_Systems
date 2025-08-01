@@ -1,5 +1,6 @@
 import apiClient from '@/services/api/apiClient';
-import { OptionDto, OptionRequest, QuestionDto, QuestionRequest } from '@/types/questTypes';
+import { AnswerDto, OptionDto, OptionRequest, QuestionDto, QuestionRequest } from '@/types/questTypes';
+import { AxiosError } from 'axios';
 
 const QUESTIONS_BASE_URL = '/v1/core/questions';
 const OPTIONS_BASE_URL = '/v1/core/options';
@@ -7,8 +8,8 @@ const OPTIONS_BASE_URL = '/v1/core/options';
 // --- Funções relacionadas a Questões ---
 
 /**
- * Busca a lista de todas as questões cadastradas no sistema.
- * @returns Uma promessa com a lista de questões.
+ * Busca a lista de todas as quests cadastradas no sistema.
+ * @returns Uma promessa com a lista de quests.
  */
 export const getAllQuests = async (): Promise<QuestionDto[]> => {
   const response = await apiClient.get<QuestionDto[]>(QUESTIONS_BASE_URL);
@@ -91,4 +92,20 @@ export const deleteOption = async (id: number): Promise<void> => {
     await apiClient.delete(`${OPTIONS_BASE_URL}/${id}`);
 };
 
+export const submitAnswer = async (optionId: number): Promise<AnswerDto> => {
+    const response = await apiClient.post<AnswerDto>(`${OPTIONS_BASE_URL}/${optionId}/choose`);
+    return response.data;
+};
 
+export const getMyAnswerForQuest = async (questionId: number): Promise<AnswerDto | null> => {
+  try {
+    const response = await apiClient.get<AnswerDto>(`${QUESTIONS_BASE_URL}/${questionId}/my-answer`);
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+};

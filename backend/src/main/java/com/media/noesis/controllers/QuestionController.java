@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.media.noesis.converters.AnswerConverter;
+import com.media.noesis.dto.AnswerDto;
 import com.media.noesis.dto.AnswerWithDetailsDto;
 import com.media.noesis.dto.OptionRequest;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
 import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.exceptions.UnauthorizedException.RuntimeUnauthorizedException;
+import com.media.noesis.services.AuthService;
 import com.media.noesis.services.OptionService;
 import com.media.noesis.services.QuestionService;
 
@@ -39,6 +42,8 @@ public class QuestionController {
 
     private final QuestionService service;
     private final OptionService optionService;
+    private final AuthService authService;
+    private final AnswerConverter answerConverter;
 
     @GetMapping
     @Operation(summary = "Listar todas", description = "Listar todas as quests cadastradas.")
@@ -117,5 +122,19 @@ public class QuestionController {
     @Operation(summary = "Buscar por autor", description = "Buscar questões por ID do autor.")
     public ResponseEntity<List<QuestionDto>> getByAuthorId(@PathVariable @NotNull final long authorId) {
         return new ResponseEntity<>(service.findByAuthorId(authorId), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/my-answer")
+    @Operation(summary = "Buscar Minha Resposta", description = "Busca a resposta do utilizador logado para esta quest.")
+    public ResponseEntity<AnswerDto> getMyAnswer(@PathVariable @NotNull final long id) {
+        try {
+            final var user = authService.getLoggedUser();
+            return service.findUserAnswerForQuestion(id, user)
+                    .map(answerConverter::toDto) // Converte a entidade Answer para AnswerDto
+                    .map(ResponseEntity::ok) // Se encontrar, retorna 200 OK com o DTO
+                    .orElse(ResponseEntity.notFound().build()); // Se não, retorna 404 Not Found
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -35,6 +35,7 @@ export interface AnswerDto {
   id: number;
   userId: number;
   optionId: number;
+  correct: boolean;
   timestamp: string;
 }
 
@@ -59,5 +60,5 @@ export interface QuestionRequest {
   level: Level;
   statement: string;
   topics?: string[];
-  options?: OptionRequest[]; // A classe Create no backend exige isso
+  options?: OptionRequest[];
 }

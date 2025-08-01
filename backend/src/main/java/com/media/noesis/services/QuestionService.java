@@ -1,6 +1,7 @@
 package com.media.noesis.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.media.noesis.dto.AnswerDto;
 import com.media.noesis.dto.AnswerWithDetailsDto;
 import com.media.noesis.dto.QuestionDto;
 import com.media.noesis.dto.QuestionRequest;
+import com.media.noesis.entities.Answer;
 import com.media.noesis.entities.User;
 import com.media.noesis.enums.Role;
 import com.media.noesis.exceptions.UnauthorizedException;
@@ -95,7 +97,7 @@ public class QuestionService {
                 .map(question -> {
                     return question.getOptions().stream()
                             .flatMap(option -> option.getAnswers().stream()
-                                    .map(answerConverter::toDto))
+                            .map(answerConverter::toDto))
                             .toList();
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
@@ -106,14 +108,22 @@ public class QuestionService {
                 .map(question -> {
                     return question.getOptions().stream()
                             .flatMap(option -> option.getAnswers().stream()
-                                    .map(answer -> new AnswerWithDetailsDto()
-                                            .setId(answer.getId())
-                                            .setOption(optionConverter.toDto(answer.getOption()))
-                                            .setUser(userConverter.toDto(answer.getUser()))
-                                            .setTimestamp(answer.getTimestamp())))
+                            .map(answer -> new AnswerWithDetailsDto()
+                            .setId(answer.getId())
+                            .setOption(optionConverter.toDto(answer.getOption()))
+                            .setUser(userConverter.toDto(answer.getUser()))
+                            .setTimestamp(answer.getTimestamp())))
                             .toList();
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Quest não localizada!"));
     }
 
+    public Optional<Answer> findUserAnswerForQuestion(long questionId, User user) {
+        return repository.findById(questionId)
+                .flatMap(question -> question.getOptions().stream()
+                .flatMap(option -> option.getAnswers().stream())
+                .filter(answer -> answer.getUser().getId() == user.getId())
+                .findFirst()
+                );
+    }
 }

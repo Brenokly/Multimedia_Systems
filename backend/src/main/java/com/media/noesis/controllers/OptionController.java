@@ -47,7 +47,7 @@ public class OptionController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma alternativa.")
-    public ResponseEntity<OptionDto> update(@PathVariable @NotNull final long id,
+    public ResponseEntity<Void> update(@PathVariable @NotNull final long id,
             @RequestBody @Valid final OptionRequest request) {
         try {
             service.update(id, request);
@@ -60,7 +60,7 @@ public class OptionController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Excluir uma alternativa.")
-    public ResponseEntity<OptionDto> delete(@PathVariable @NotNull final long id) {
+    public ResponseEntity<Void> delete(@PathVariable @NotNull final long id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -72,15 +72,15 @@ public class OptionController {
 
     @PostMapping("{id}/choose")
     @Transactional
-    @Operation(summary = "Editar", description = "Editar os dados de uma alternativa.")
-    public ResponseEntity<AnswerDto> choose(@PathVariable @NotNull final long id) {
+    @Operation(summary = "Escolher Resposta", description = "Regista a escolha de uma alternativa por um utilizador.")
+    public ResponseEntity<AnswerDto> chooseOption(@PathVariable @NotNull final long id) {
         try {
-            return new ResponseEntity<>(service.choose(id), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+            final var answerDto = service.choose(id);
+            return ResponseEntity.ok(answerDto);
         } catch (final UnauthorizedException e) {
-            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage())).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
-
 }

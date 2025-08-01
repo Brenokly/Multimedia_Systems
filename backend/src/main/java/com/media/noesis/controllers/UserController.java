@@ -2,6 +2,8 @@ package com.media.noesis.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.media.noesis.dto.ClanDto;
@@ -107,17 +110,12 @@ public class UserController {
     }
 
     @GetMapping("ranking")
-    @Operation(summary = "Ranking", description = "Exibir usuários em ranking de pontuação.")
-    public ResponseEntity<List<UserWithScoreDto>> getRanking() {
-        return new ResponseEntity<>(
-                service.listStudents().stream()
-                        .map(dto -> {
-                            final var score = service.getScore(dto.getId());
-                            return new UserWithScoreDto(dto).setScore(score);
-                        })
-                        .sorted((a, b) -> Long.compare(b.getScore(), a.getScore()))
-                        .toList(),
-                HttpStatus.OK);
+    @Operation(summary = "Ranking", description = "Exibe o ranking de pontuação. Pode ser filtrado por clã.")
+    public ResponseEntity<Page<UserWithScoreDto>> getRanking(
+            Pageable pageable,
+            @RequestParam(required = false) Long clanId) {
+
+        return new ResponseEntity<>(service.getRanking(pageable, clanId), HttpStatus.OK);
     }
 
     @GetMapping("managed-clans")
@@ -173,5 +171,4 @@ public class UserController {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
         }
     }
-
 }

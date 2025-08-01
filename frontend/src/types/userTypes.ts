@@ -17,6 +17,15 @@ export interface UserDto {
 }
 
 /**
+ * Representa os dados de um utilizador com a sua pontuação,
+ * usado na página de ranking.
+ * Corresponde ao `UserWithScoreDto` do backend.
+ */
+export interface UserWithScoreDto extends UserDto {
+  score: number;
+}
+
+/**
  * Dados necessários para criar um novo usuário.
  * Corresponde ao `UserRequest.Create` do backend.
  */
@@ -39,4 +48,12 @@ export interface UserUpdateRequest {
   password?: string;
   avatarId: number;
   role: Role;
+}
+
+export interface Page<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
 }

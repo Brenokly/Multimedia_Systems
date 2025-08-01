@@ -2,11 +2,17 @@
 
 import Button from "@/components/ui/Button";
 import { getUserData } from "@/services/api/tokenManager";
-import { getQuestById } from "@/services/questService";
+import {
+  getMyAnswerForQuest,
+  getQuestById,
+  submitAnswer,
+} from "@/services/questService";
 import { OptionDto, QuestionDto } from "@/types/questTypes";
+import { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 // --- Definições de Tipo para a biblioteca canvas-confetti ---
 
@@ -151,10 +157,30 @@ export default function QuestChallengePage() {
     }
 
     if (questId) {
-      const fetchQuest = async () => {
+      const fetchQuestAndCheckStatus = async () => {
         try {
-          const data = await getQuestById(questId);
-          setQuest(data);
+          // Busca os dados da quest e a resposta anterior do utilizador em paralelo.
+          const [questData, myAnswer] = await Promise.all([
+            getQuestById(questId),
+            getMyAnswerForQuest(questId),
+          ]);
+
+          setQuest(questData);
+
+          // Se 'myAnswer' existir, significa que o utilizador já respondeu.
+          if (myAnswer) {
+            setHasAnswered(true);
+            // Encontra a opção que o utilizador realmente selecionou no passado.
+            const previouslySelectedOption = questData.options.find(
+              (o) => o.id === myAnswer.optionId
+            );
+            setSelectedOption(previouslySelectedOption || null);
+            // Define o resultado com base na resposta guardada, corrigindo o bug.
+            setAnswerResult(myAnswer.correct ? "correct" : "incorrect");
+            toast.error("Você já completou esta quest!", {
+              id: "already-answered",
+            });
+          }
         } catch (error) {
           console.error("Falha ao buscar a quest:", error);
           router.push("/student/dashboard");
@@ -162,16 +188,33 @@ export default function QuestChallengePage() {
           setIsLoading(false);
         }
       };
-      fetchQuest();
+      fetchQuestAndCheckStatus();
     }
   }, [questId, router]);
 
-  const handleOptionSelect = (option: OptionDto) => {
+  const handleOptionSelect = async (option: OptionDto) => {
     if (hasAnswered) return;
+
     setHasAnswered(true);
     setSelectedOption(option);
     setAnswerResult(option.correct ? "correct" : "incorrect");
-    // TODO: Adicionar chamada ao serviço para submeter a resposta (Answer) ao backend
+
+    try {
+      await submitAnswer(option.id);
+    } catch (error) {
+      console.error("Falha ao submeter a resposta:", error);
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 401) {
+        toast.error("Você já respondeu a esta quest!", {
+          id: "already-answered",
+        });
+      } else {
+        toast.error(
+          "Não foi possível registar a sua resposta. Tente novamente."
+        );
+      }
+    }
   };
 
   if (isLoading) {
@@ -192,6 +235,7 @@ export default function QuestChallengePage() {
 
   return (
     <>
+      <Toaster />
       <Script
         src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"
         strategy="lazyOnload"
@@ -229,9 +273,11 @@ export default function QuestChallengePage() {
       >
         {answerResult === "correct" && <VictoryAnimation />}
 
-        {/* Botão de Voltar adicionado aqui */}
         <div className="w-full max-w-[1560px] flex justify-start mb-4">
-          <Button onClick={() => router.back()} variant="secondary">
+          <Button
+            onClick={() => router.back()}
+            className="bg-[#0288d1] text-white border-[#5d4037] shadow-[inset_-4px_-4px_0px_0px_#0277bd] hover:bg-[#0277bd]"
+          >
             &lt; Voltar
           </Button>
         </div>
