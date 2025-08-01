@@ -163,4 +163,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("{id}/score-by-clan/{clanId}")
+    @Operation(summary = "Obter pontuação por clã", description = "Obter pontuação de usuário em determinado clã.")
+    public ResponseEntity<Long> getScore(@PathVariable @NotNull final long id,
+            @PathVariable @NotNull final long clanId) {
+        try {
+            return ResponseEntity.ok(service.getScore(id, clanId));
+        } catch (final EntityNotFoundException e) {
+            return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage())).build();
+        }
+    }
+
 }
