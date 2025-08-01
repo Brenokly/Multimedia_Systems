@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.media.noesis.dto.ClanDto;
 import com.media.noesis.dto.UserDto;
 import com.media.noesis.dto.UserRequest;
-import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.dto.UserWithScoreDto;
+import com.media.noesis.exceptions.UnauthorizedException;
 import com.media.noesis.services.AuthService;
 import com.media.noesis.services.UserService;
 
